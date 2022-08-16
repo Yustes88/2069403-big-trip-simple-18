@@ -8,6 +8,8 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const shuffleElements = (elements) => elements.sort(() => Math.random() - 0.5);
+
 const humanizeTaskDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
 
-export {getRandomInteger, humanizeTaskDueDate};
+export {getRandomInteger, humanizeTaskDueDate, shuffleElements};
