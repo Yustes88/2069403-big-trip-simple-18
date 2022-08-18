@@ -105,23 +105,26 @@ const createContentTemplate = (tripPoint) => {
 };
 
 export default class TripFormAddView {
+  #element = null;
+  #tripPoint = null;
+
   constructor(tripPoint) {
-    this.tripPoint = tripPoint;
+    this.#tripPoint = tripPoint;
   }
 
-  getTemplate() {
-    return createContentTemplate(this.tripPoint);
+  get template() {
+    return createContentTemplate(this.#tripPoint);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
