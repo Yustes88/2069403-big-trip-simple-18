@@ -1,13 +1,8 @@
-import { getDestination } from '../mock/destination-mock';
-import { getOffers } from '../mock/offers-mock';
+import { TRIP_POINT_ITEMS } from '../const.js';
 import { generateTripPoint } from '../mock/trip-point-mock.js';
 
 export default class TripsModel {
-  tripPoint = Array.from({length: 5}, generateTripPoint);
-  tripDestination = getDestination();
-  tripOffers = getOffers();
+  tripPoint = Array.from({length: TRIP_POINT_ITEMS }, generateTripPoint);
 
-  getTripPoint = () => this.tripPoint;
-  getDestination = () => this.tripDestination;
-  getTripOffers = () => this.tripOffers;
+  getPoints = () => this.tripPoint;
 }
