@@ -39,11 +39,26 @@ export default class ContentPresenter {
       this.#tripListComponent.element.replaceChild(tripPointComponent.element, tripFormEditComponent.element);
     };
 
-    tripPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () =>
-      replacePointWithForm());
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormWithPoint();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    tripPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointWithForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
 
     tripFormEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
       evt.preventDefault();
+      replaceFormWithPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    tripFormEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replaceFormWithPoint();
     });
 
