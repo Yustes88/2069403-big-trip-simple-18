@@ -2,7 +2,6 @@ import { render } from '../render.js';
 import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripList from '../view/trip-list.js';
-import TripFormAddView from '../view/trip-form-add.js';
 
 
 export default class ContentPresenter {
@@ -20,11 +19,16 @@ export default class ContentPresenter {
 
     render(this.#sortFormComponent, this.#mainContainer);
     render(this.#tripListComponent, this.#mainContainer);
-    render(new TripFormAddView(this.#contentPoint[0]), this.#tripListComponent.element);
+
 
     for(let i = 0; i < this.#contentPoint.length; i++) {
-      render(new TripEventItemView(this.#contentPoint[i]), this.#tripListComponent.element);
+      this.#renderPoint(this.#contentPoint[i]);
     }
+  };
+
+  #renderPoint = (tripPoint) => {
+    const tripPointComponent = new TripEventItemView(tripPoint);
+    render(tripPointComponent, this.#tripListComponent.element);
   };
 
 }
