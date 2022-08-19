@@ -4,6 +4,6 @@ const OFFERS = ['Add luggage', 'Choose seats', 'Add meal', 'Comfort class', 'Bus
 
 const DESTINATIONS = ['Chamonix', 'Amsterdam', 'Rome', 'Madrid', 'Geneva'];
 
-const TRIP_POINT_ITEMS = 5;
+const TRIP_POINT_ITEMS = 10;
 
 export {OFFER_TYPES, DESTINATIONS, OFFERS, TRIP_POINT_ITEMS};

@@ -1,7 +1,8 @@
 import { render } from '../render.js';
+import PointsListEmptyView from '../view/points-list-empty-view.js';
 import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
-import TripFormAddView from '../view/trip-form-edit.js';
+import TripFormAddView from '../view/trip-form-add-view.js';
 import TripList from '../view/trip-list.js';
 
 
@@ -13,19 +14,17 @@ export default class ContentPresenter {
   #sortFormComponent = new SortFormView();
   #tripListComponent = new TripList();
 
-  init = (mainContainer, tripPointModel) => {
+  constructor(mainContainer, tripPointModel){
     this.#mainContainer = mainContainer;
     this.#tripPoint = tripPointModel;
+
+  }
+
+  init = () => {
     this.#contentPoint = [...this.#tripPoint.points];
-
-    render(this.#sortFormComponent, this.#mainContainer);
-    render(this.#tripListComponent, this.#mainContainer);
-
-
-    for(let i = 0; i < this.#contentPoint.length; i++) {
-      this.#renderPoint(this.#contentPoint[i]);
-    }
+    this.#renderContent();
   };
+
 
   #renderPoint = (tripPoint) => {
     const tripPointComponent = new TripEventItemView(tripPoint);
@@ -64,6 +63,21 @@ export default class ContentPresenter {
 
 
     render(tripPointComponent, this.#tripListComponent.element);
+  };
+
+  #renderContent = () => {
+    if(this.#contentPoint.length === 0) {
+      render(new PointsListEmptyView(), this.#mainContainer);
+      return;
+    }
+
+    render(this.#sortFormComponent, this.#mainContainer);
+    render(this.#tripListComponent, this.#mainContainer);
+
+
+    for(let i = 0; i < this.#contentPoint.length; i++) {
+      this.#renderPoint(this.#contentPoint[i]);
+    }
   };
 
 }
