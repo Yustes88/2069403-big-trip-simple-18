@@ -1,7 +1,8 @@
 import { render } from '../render.js';
+import PointsListEmptyView from '../view/points-list-empty-view.js';
 import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
-import TripFormAddView from '../view/trip-form-edit.js';
+import TripFormAddView from '../view/trip-form-add-view.js';
 import TripList from '../view/trip-list.js';
 
 
@@ -17,6 +18,11 @@ export default class ContentPresenter {
     this.#mainContainer = mainContainer;
     this.#tripPoint = tripPointModel;
     this.#contentPoint = [...this.#tripPoint.points];
+
+    if(this.#contentPoint.length === 0) {
+      render(new PointsListEmptyView(), this.#mainContainer);
+      return;
+    }
 
     render(this.#sortFormComponent, this.#mainContainer);
     render(this.#tripListComponent, this.#mainContainer);
