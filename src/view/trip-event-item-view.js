@@ -1,5 +1,5 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import { destinations, offer } from '../mock/trip-point-mock.js';
-import { createElement } from '../render.js';
 import { humanizeHour, humanizeStartDate } from '../utile.js';
 
 
@@ -45,26 +45,14 @@ const createContentTemplate = (tripPoints) => {
   `);
 };
 
-export default class TripEventItemView {
-  #element = null;
+export default class TripEventItemView extends AbstractView {
   #tripPoint = null;
   constructor(tripPoint) {
+    super();
     this.#tripPoint = tripPoint;
   }
 
   get template() {
     return createContentTemplate(this.#tripPoint);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
