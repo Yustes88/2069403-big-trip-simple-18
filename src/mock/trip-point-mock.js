@@ -1,5 +1,5 @@
 import { OFFERS, OFFER_TYPES} from '../const.js';
-import {getRandomInteger } from '../utile.js';
+import {getRandomInteger } from '../utile/common.js';
 
 const generateType = () => {
   const types = OFFER_TYPES;

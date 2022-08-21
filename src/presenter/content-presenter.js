@@ -1,4 +1,4 @@
-import { render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
@@ -31,11 +31,11 @@ export default class ContentPresenter {
     const tripFormEditComponent = new TripFormEditView(tripPoint);
 
     const replacePointWithForm = () => {
-      this.#tripListComponent.element.replaceChild(tripFormEditComponent.element, tripPointComponent.element);
+      replace(tripFormEditComponent, tripPointComponent);
     };
 
     const replaceFormWithPoint = () => {
-      this.#tripListComponent.element.replaceChild(tripPointComponent.element, tripFormEditComponent.element);
+      replace(tripPointComponent, tripFormEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
