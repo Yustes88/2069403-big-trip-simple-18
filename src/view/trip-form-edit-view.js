@@ -1,7 +1,7 @@
 import { DESTINATIONS, OFFER_TYPES } from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { destinations, offer } from '../mock/trip-point-mock.js';
-import { createElement } from '../render.js';
-import { humanizeDate } from '../utile.js';
+import { humanizeDate } from '../utile/trip-point-utile.js';
 
 
 const createContentTemplate = (tripPoint) => {
@@ -107,11 +107,11 @@ const createContentTemplate = (tripPoint) => {
 </li>`);
 };
 
-export default class TripFormEditView {
-  #element = null;
+export default class TripFormEditView extends AbstractView {
   #tripPoint = null;
 
   constructor(tripPoint) {
+    super();
     this.#tripPoint = tripPoint;
   }
 
@@ -119,16 +119,25 @@ export default class TripFormEditView {
     return createContentTemplate(this.#tripPoint);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setRollUpClickHandler = (callback) => {
+    this._callback.rollUpClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+  };
 
-    return this.#element;
-  }
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollUpClick();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
 }
 

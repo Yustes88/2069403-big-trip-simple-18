@@ -1,6 +1,6 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import { destinations, offer } from '../mock/trip-point-mock.js';
-import { createElement } from '../render.js';
-import { humanizeHour, humanizeStartDate } from '../utile.js';
+import { humanizeHour, humanizeStartDate } from '../utile/trip-point-utile.js';
 
 
 const createContentTemplate = (tripPoints) => {
@@ -45,10 +45,10 @@ const createContentTemplate = (tripPoints) => {
   `);
 };
 
-export default class TripEventItemView {
-  #element = null;
+export default class TripEventItemView extends AbstractView {
   #tripPoint = null;
   constructor(tripPoint) {
+    super();
     this.#tripPoint = tripPoint;
   }
 
@@ -56,15 +56,13 @@ export default class TripEventItemView {
     return createContentTemplate(this.#tripPoint);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setRollUpClickHandler = (callback) => {
+    this._callback.rollUpClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollUpClick();
+  };
 }
