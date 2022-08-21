@@ -2,7 +2,7 @@ import { render } from '../framework/render.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
-import TripFormAddView from '../view/trip-form-add-view.js';
+import TripFormEditView from '../view/trip-form-edit-view.js';
 import TripList from '../view/trip-list.js';
 
 
@@ -28,7 +28,7 @@ export default class ContentPresenter {
 
   #renderPoint = (tripPoint) => {
     const tripPointComponent = new TripEventItemView(tripPoint);
-    const tripFormEditComponent = new TripFormAddView(tripPoint);
+    const tripFormEditComponent = new TripFormEditView(tripPoint);
 
     const replacePointWithForm = () => {
       this.#tripListComponent.element.replaceChild(tripFormEditComponent.element, tripPointComponent.element);
@@ -46,18 +46,17 @@ export default class ContentPresenter {
       }
     };
 
-    tripPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    tripPointComponent.setRollUpClickHandler(() => {
       replacePointWithForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    tripFormEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    tripFormEditComponent.setFormSubmitHandler(() => {
       replaceFormWithPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    tripFormEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    tripFormEditComponent.setRollUpClickHandler(() => {
       replaceFormWithPoint();
     });
 

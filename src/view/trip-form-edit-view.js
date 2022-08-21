@@ -118,5 +118,26 @@ export default class TripFormEditView extends AbstractView {
   get template() {
     return createContentTemplate(this.#tripPoint);
   }
+
+  setRollUpClickHandler = (callback) => {
+    this._callback.rollUpClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+  };
+
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollUpClick();
+  };
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
 }
 

@@ -55,4 +55,14 @@ export default class TripEventItemView extends AbstractView {
   get template() {
     return createContentTemplate(this.#tripPoint);
   }
+
+  setRollUpClickHandler = (callback) => {
+    this._callback.rollUpClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+  };
+
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollUpClick();
+  };
 }
