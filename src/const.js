@@ -11,4 +11,12 @@ const FILTER_TYPES = {
   FUTURE: 'future',
 };
 
-export {OFFER_TYPES, DESTINATIONS, OFFERS, TRIP_POINT_ITEMS, FILTER_TYPES};
+const SORT_TYPES = {
+  DATE: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
+};
+
+export {OFFER_TYPES, DESTINATIONS, OFFERS, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES};
