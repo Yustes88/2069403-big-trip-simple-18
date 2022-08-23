@@ -1,6 +1,5 @@
 import { render, replace } from '../framework/render.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
-import SortFormView from '../view/sort-form-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 import TripList from '../view/trip-list.js';
@@ -11,7 +10,6 @@ export default class ContentPresenter {
   #tripPoint = null;
   #contentPoint = [];
 
-  #sortFormComponent = new SortFormView();
   #tripListComponent = new TripList();
 
   constructor(mainContainer, tripPointModel){
@@ -70,7 +68,6 @@ export default class ContentPresenter {
       return;
     }
 
-    render(this.#sortFormComponent, this.#mainContainer);
     render(this.#tripListComponent, this.#mainContainer);
 
 
