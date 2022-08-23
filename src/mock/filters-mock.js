@@ -1,8 +1,8 @@
 import { filter } from '../utile/filter-utile.js';
 
-export const generateFilter = () => Object.entries(filter).map(
-  ([filterName]) => ({
+export const generateFilter = (points) => Object.entries(filter).map(
+  ([filterName, filterPoints]) => ({
     name: filterName,
-    count: 0,
+    count: filterPoints(points).length,
   }),
 );
