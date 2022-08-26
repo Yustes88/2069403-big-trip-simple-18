@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render.js';
+import { render, RenderPosition, replace } from '../framework/render.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
@@ -11,6 +11,7 @@ export default class ContentPresenter {
   #contentPoint = [];
 
   #tripListComponent = new TripList();
+  #pointsListEmptyComponent = new PointsListEmptyView();
 
   constructor(mainContainer, tripPointModel){
     this.#mainContainer = mainContainer;
@@ -62,18 +63,29 @@ export default class ContentPresenter {
     render(tripPointComponent, this.#tripListComponent.element);
   };
 
-  #renderContent = () => {
-    if(this.#contentPoint.length === 0) {
-      render(new PointsListEmptyView(), this.#mainContainer);
-      return;
-    }
-
-    render(this.#tripListComponent, this.#mainContainer);
-
-
+  #renderPoints = () => {
     for(let i = 0; i < this.#contentPoint.length; i++) {
       this.#renderPoint(this.#contentPoint[i]);
     }
+  };
+
+  #renderPointsList = () => {
+    render(this.#tripListComponent, this.#mainContainer);
+    this.#renderPoints();
+  };
+
+  #renderPointsListEmpty = () => {
+    render(this.#pointsListEmptyComponent, this.#mainContainer, RenderPosition.BEFOREEND);
+  };
+
+  #renderContent = () => {
+    if(this.#contentPoint.length === 0) {
+      this.#renderPointsListEmpty();
+      return;
+    }
+
+    this.#renderPointsList();
+
   };
 
 }
