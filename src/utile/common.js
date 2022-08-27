@@ -10,5 +10,19 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const shuffleElements = (elements) => elements.sort(() => Math.random() - 0.5);
 
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.nanoId === update.id);
 
-export {getRandomInteger, shuffleElements};
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+
+export {getRandomInteger, shuffleElements, updateItem};

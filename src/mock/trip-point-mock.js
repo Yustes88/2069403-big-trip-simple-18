@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { OFFERS, OFFER_TYPES} from '../const.js';
 import {getRandomInteger } from '../utile/common.js';
 
@@ -69,7 +70,7 @@ export const generateTripPoint = () => ({
   'dateFrom': '2019-07-10T22:55:56.845Z',
   'dateTo': '2019-07-11T11:22:13.375Z',
   'destination': getRandomInteger(1, 3),
-  'id': getRandomInteger(1, 5),
+  'id': nanoid(),
   'offers': getRandomInteger(1, 3),
   'type': generateType(),
 }

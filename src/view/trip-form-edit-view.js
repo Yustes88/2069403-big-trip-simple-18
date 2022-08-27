@@ -14,7 +14,7 @@ const createContentTemplate = (tripPoint) => {
   const photoDescriptionComponent = destinations.find((el) => (el.id === destination)).pictures[0].description;
 
   const createPhotosTemplate = () => photoComponent.map((picture) =>
-    `<img class="event__photo" src= "${picture}" alt="${photoDescriptionComponent}">`);
+    `<img class="event__photo" src=${picture} alt='${photoDescriptionComponent}'>`);
 
   const createType = (currentType) => OFFER_TYPES.map((pointType) =>
     `<div class="event__type-item">
@@ -98,7 +98,7 @@ const createContentTemplate = (tripPoint) => {
         <p class="event__destination-description">${descriptionComponent}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${createPhotosTemplate()};
+            ${createPhotosTemplate().join('')}
           </div>
         </div>
       </section>
@@ -121,10 +121,10 @@ export default class TripFormEditView extends AbstractView {
 
   setRollUpClickHandler = (callback) => {
     this._callback.rollUpClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleRollDownClick);
   };
 
-  #rollUpClickHandler = (evt) => {
+  #handleRollDownClick = (evt) => {
     evt.preventDefault();
     this._callback.rollUpClick();
   };
