@@ -1,4 +1,5 @@
 import { render, RenderPosition } from '../framework/render.js';
+import { updateItem } from '../utile/common.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import TripList from '../view/trip-list.js';
 import TripPointPresenter from './trip-point-presenter.js';
@@ -8,6 +9,7 @@ export default class ContentPresenter {
   #mainContainer = null;
   #tripPoint = null;
   #contentPoint = [];
+  #tripPointPresenter = new Map();
 
   #tripListComponent = new TripList();
   #pointsListEmptyComponent = new PointsListEmptyView();
@@ -23,16 +25,31 @@ export default class ContentPresenter {
     this.#renderContent();
   };
 
+  #handleModeChange = () => {
+    this.#tripPointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleTripPointChange = (updatedTripPoint) => {
+    this.#contentPoint = updateItem(this.#contentPoint, updatedTripPoint);
+    this.#tripPointPresenter.get(updatedTripPoint.id).init(updatedTripPoint);
+  };
+
 
   #renderPoint = (tripPoint) => {
-    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element);
+    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element, this.#handleTripPointChange, this.#handleModeChange);
     tripPointPresenter.init(tripPoint);
+    this.#tripPointPresenter.set(tripPoint.id, tripPointPresenter);
   };
 
   #renderPoints = () => {
     for(let i = 0; i < this.#contentPoint.length; i++) {
       this.#renderPoint(this.#contentPoint[i]);
     }
+  };
+
+  #clearPointList = () => {
+    this.#tripPointPresenter.forEach((presenter) => presenter.destroy());
+    this.#tripPointPresenter.clear();
   };
 
   #renderPointsList = () => {
@@ -43,6 +60,7 @@ export default class ContentPresenter {
   #renderPointsListEmpty = () => {
     render(this.#pointsListEmptyComponent, this.#mainContainer, RenderPosition.BEFOREEND);
   };
+
 
   #renderContent = () => {
     if(this.#contentPoint.length === 0) {

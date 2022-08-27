@@ -2,6 +2,11 @@ import { remove, render, replace } from '../framework/render.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class TripPointPresenter {
   #tripPointListContainer = null;
 
@@ -9,9 +14,14 @@ export default class TripPointPresenter {
   #tripPointEditComponent = null;
 
   #tripPoint = null;
+  #changeData = null;
+  #changeMode = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(tripPointListContainer) {
+  constructor(tripPointListContainer, changeData, changeMode) {
     this.#tripPointListContainer = tripPointListContainer;
+    this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (tripPoint) => {
@@ -34,11 +44,11 @@ export default class TripPointPresenter {
       return;
     }
 
-    if(this.#tripPointListContainer.contains(prevTripPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#tripPointComponent, prevTripPointComponent);
     }
 
-    if(this.#tripPointListContainer.contains(prevTripPointEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#tripPointEditComponent, prevTripPointEditComponent);
     }
 
@@ -46,14 +56,23 @@ export default class TripPointPresenter {
     remove(prevTripPointEditComponent);
   };
 
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormWithPoint();
+    }
+  };
+
   #replacePointWithForm = () => {
     replace(this.#tripPointEditComponent, this.#tripPointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceFormWithPoint = () => {
     replace(this.#tripPointComponent, this.#tripPointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   #escKeyDownHandler = (evt) => {
@@ -71,7 +90,8 @@ export default class TripPointPresenter {
     this.#replaceFormWithPoint();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (tripPoint) => {
+    this.#changeData(tripPoint);
     this.#replaceFormWithPoint();
   };
 }
