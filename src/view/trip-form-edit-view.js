@@ -121,10 +121,10 @@ export default class TripFormEditView extends AbstractView {
 
   setRollUpClickHandler = (callback) => {
     this._callback.rollUpClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleRollDownClick);
   };
 
-  #rollUpClickHandler = (evt) => {
+  #handleRollDownClick = (evt) => {
     evt.preventDefault();
     this._callback.rollUpClick();
   };

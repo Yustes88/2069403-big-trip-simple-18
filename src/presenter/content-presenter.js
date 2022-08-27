@@ -1,8 +1,7 @@
-import { render, RenderPosition, replace } from '../framework/render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
-import TripEventItemView from '../view/trip-event-item-view.js';
-import TripFormEditView from '../view/trip-form-edit-view.js';
 import TripList from '../view/trip-list.js';
+import TripPointPresenter from './trip-point-presenter.js';
 
 
 export default class ContentPresenter {
@@ -26,41 +25,8 @@ export default class ContentPresenter {
 
 
   #renderPoint = (tripPoint) => {
-    const tripPointComponent = new TripEventItemView(tripPoint);
-    const tripFormEditComponent = new TripFormEditView(tripPoint);
-
-    const replacePointWithForm = () => {
-      replace(tripFormEditComponent, tripPointComponent);
-    };
-
-    const replaceFormWithPoint = () => {
-      replace(tripPointComponent, tripFormEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormWithPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    tripPointComponent.setRollUpClickHandler(() => {
-      replacePointWithForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    tripFormEditComponent.setFormSubmitHandler(() => {
-      replaceFormWithPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    tripFormEditComponent.setRollUpClickHandler(() => {
-      replaceFormWithPoint();
-    });
-
-
-    render(tripPointComponent, this.#tripListComponent.element);
+    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element);
+    tripPointPresenter.init(tripPoint);
   };
 
   #renderPoints = () => {
