@@ -1,5 +1,6 @@
 import { render, RenderPosition } from '../framework/render.js';
 import { updateItem } from '../utile/common.js';
+import SortFormView from '../view/sort-form-view.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import TripList from '../view/trip-list.js';
 import TripPointPresenter from './trip-point-presenter.js';
@@ -11,6 +12,7 @@ export default class ContentPresenter {
   #contentPoint = [];
   #tripPointPresenter = new Map();
 
+  #sortFormComponent = new SortFormView();
   #tripListComponent = new TripList();
   #pointsListEmptyComponent = new PointsListEmptyView();
 
@@ -32,6 +34,10 @@ export default class ContentPresenter {
   #handleTripPointChange = (updatedTripPoint) => {
     this.#contentPoint = updateItem(this.#contentPoint, updatedTripPoint);
     this.#tripPointPresenter.get(updatedTripPoint.id).init(updatedTripPoint);
+  };
+
+  #renderSort = () => {
+    render(this.#sortFormComponent, this.#mainContainer, RenderPosition.AFTERBEGIN);
   };
 
 
@@ -68,6 +74,7 @@ export default class ContentPresenter {
       return;
     }
 
+    this.#renderSort();
     this.#renderPointsList();
 
   };
