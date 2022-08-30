@@ -1,12 +1,28 @@
-import { SORT_TYPES } from '../const.js';
+import dayjs from 'dayjs';
 
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
 
-const sort = {
-  [SORT_TYPES.DATE]: (tripPoints) => tripPoints.sort((a, b) => a.dateFrom - b.dateFrom),
-  [SORT_TYPES.EVENT]: (tripPoints) => tripPoints,
-  [SORT_TYPES.TIME]: (tripPoints) => tripPoints,
-  [SORT_TYPES.PRICE]: (tripPoints) => tripPoints.sort((a, b) => b.basePrice - a.basePrice),
-  [SORT_TYPES.OFFER]: (tripPoints) => tripPoints,
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
 };
 
-export {sort};
+const sortDate = (tripPointA, tripPointB) => {
+  const weight = getWeightForNullDate(tripPointA.dueDate, tripPointB.dueDate);
+
+  return weight ?? dayjs(tripPointA.dueDate).diff(dayjs(tripPointB.dueDate));
+};
+
+const sortPrice = (tripPointA, tripPointB) => tripPointB.basePrice - tripPointA.basePrice;
+
+
+export {sortDate, sortPrice};
