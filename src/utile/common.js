@@ -11,7 +11,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 const shuffleElements = (elements) => elements.sort(() => Math.random() - 0.5);
 
 const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.nanoId === update.id);
+  const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
     return items;
