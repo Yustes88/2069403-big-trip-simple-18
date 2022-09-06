@@ -1,5 +1,5 @@
 import { DESTINATIONS, OFFER_TYPES } from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations, offer } from '../mock/trip-point-mock.js';
 import { humanizeDate } from '../utile/trip-point-utile.js';
 
@@ -61,7 +61,7 @@ const createContentTemplate = (tripPoint) => {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="${destinationNameComponent}">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationNameComponent}" list="${destinationNameComponent}">
         <datalist id="destination-list-1">
         ${destinationListComponent}
         </datalist>
@@ -107,16 +107,15 @@ const createContentTemplate = (tripPoint) => {
 </li>`);
 };
 
-export default class TripFormEditView extends AbstractView {
-  #tripPoint = null;
+export default class TripFormEditView extends AbstractStatefulView {
 
   constructor(tripPoint) {
     super();
-    this.#tripPoint = tripPoint;
+    this._state = TripFormEditView.parseTripPointToState(tripPoint);
   }
 
   get template() {
-    return createContentTemplate(this.#tripPoint);
+    return createContentTemplate(this._state);
   }
 
   setRollUpClickHandler = (callback) => {
@@ -139,5 +138,17 @@ export default class TripFormEditView extends AbstractView {
     this._callback.formSubmit();
   };
 
+  static parseTripPointToState = (tripPoint) => ({...tripPoint,
+    offersByType: tripPoint.type,
+  });
+
+  static parseStateToTripPoint = (state, pointByType) => {
+    const tripPoint = {...state};
+
+    tripPoint.offers = Array.from(Object.values(pointByType)[0]);
+
+    delete tripPoint.pointByType;
+    return tripPoint;
+  };
 }
 
