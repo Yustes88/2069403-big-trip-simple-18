@@ -5,10 +5,10 @@ import { humanizeDate } from '../utile/trip-point-utile.js';
 
 
 const createContentTemplate = (tripPoint) => {
-  const {basePrice, destination, dateFrom, dateTo, type, pointOffer} = tripPoint;
+  const {basePrice, destination, dateFrom, dateTo, type, offersByType, pointOffer} = tripPoint;
 
   const destinationNameComponent = destinations.find((el) => (el.id === destination)).name;
-  const pointOfferType = offer.filter((el) => (el.type === type));
+  const pointOfferType = offer.filter((el) => (el.type === offersByType));
   const descriptionComponent = destinations.find((el) => (el.id === destination)).description;
   const photoComponent = destinations.find((el) => (el.id === destination)).pictures[0].src;
   const photoDescriptionComponent = destinations.find((el) => (el.id === destination)).pictures[0].description;
@@ -47,7 +47,7 @@ const createContentTemplate = (tripPoint) => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${offersByType}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
@@ -59,7 +59,7 @@ const createContentTemplate = (tripPoint) => {
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
+        ${offersByType}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationNameComponent}" list="${destinationNameComponent}">
         <datalist id="destination-list-1">
@@ -142,10 +142,10 @@ export default class TripFormEditView extends AbstractStatefulView {
     offersByType: tripPoint.type,
   });
 
-  static parseStateToTripPoint = (state, pointByType) => {
+  static parseStateToTripPoint = (state, offersByType) => {
     const tripPoint = {...state};
 
-    tripPoint.offers = Array.from(Object.values(pointByType)[0]);
+    tripPoint.offers = Array.from(Object.values(offersByType)[0]);
 
     delete tripPoint.pointByType;
     return tripPoint;
