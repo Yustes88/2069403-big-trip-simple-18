@@ -3,30 +3,45 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations, offer } from '../mock/trip-point-mock.js';
 import { humanizeDate } from '../utile/trip-point-utile.js';
 
+const createType = (currentType) => OFFER_TYPES.map((pointType) =>
+  `<div class="event__type-item">
+<input id="event-type-${pointType}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === 'checked'}>
+<label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}">${pointType}</label>
+</div>`).join('');
+
+const editDestinationNamesListTemplate = () => (
+  DESTINATIONS.map((name) =>
+    `<option value="${ name }"></option>`));
 
 const createContentTemplate = (tripPoint) => {
-  const {basePrice, destination, dateFrom, dateTo, type, offersByType, pointOffer} = tripPoint;
+  const {basePrice, destination, dateFrom, dateTo, type, pointOffer, destinationNameTemplate = destinations.find((el) => (el.id === destination)).name} = tripPoint;
 
-  const destinationNameComponent = destinations.find((el) => (el.id === destination)).name;
-  const pointOfferType = offer.filter((el) => (el.type === offersByType));
-  const descriptionComponent = destinations.find((el) => (el.id === destination)).description;
-  const photoComponent = destinations.find((el) => (el.id === destination)).pictures[0].src;
+  const typeComponent = createType(type);
+  const destinationNameListTemplate = editDestinationNamesListTemplate(destination).join('');
+
+  const pointOfferType = offer.filter((el) => (el.type === type));
+
+  const descriptionTemplate = destinations.map((el) => {
+    if (destinationNameTemplate === null || destinationNameTemplate !== el.name){
+      return null;
+    }
+    if (el.name === destinationNameTemplate){
+      return el.description;
+    }
+  }).join('');
+
   const photoDescriptionComponent = destinations.find((el) => (el.id === destination)).pictures[0].description;
 
-  const createPhotosTemplate = () => photoComponent.map((picture) =>
-    `<img class="event__photo" src=${picture} alt='${photoDescriptionComponent}'>`);
+  const picturesTemplate = destinations.map((el) => {
+    if (destinationNameTemplate === null || destinationNameTemplate !== el.name){
+      return null;
+    }
 
-  const createType = (currentType) => OFFER_TYPES.map((pointType) =>
-    `<div class="event__type-item">
-   <input id="event-type-${pointType}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === 'checked'}>
-   <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}">${pointType}</label>
-   </div>`).join('');
+    if(el.name === destinationNameTemplate){
+      return el.pictures[0].src.map((picture) =>`<img class="event__photo" src= "${ picture }" alt="${ photoDescriptionComponent }">`).join('');
+    }
+  }).join('');
 
-  const createDestinationNamesListTemplate = () => (
-    DESTINATIONS.map((name) =>
-      `<option value="${name}"></option>`));
-
-  const destinationListComponent = createDestinationNamesListTemplate(destination);
 
   const tripPointOfferComponent = pointOfferType.map((el) => {
     const checked = (pointOffer === el.id ) ? 'checked' : '';
@@ -39,7 +54,6 @@ const createContentTemplate = (tripPoint) => {
               </div>`;
   });
 
-  const typeComponent = createType(type);
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -47,7 +61,7 @@ const createContentTemplate = (tripPoint) => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${offersByType}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
@@ -59,11 +73,10 @@ const createContentTemplate = (tripPoint) => {
       </div>
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${offersByType}
+        ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationNameComponent}" list="${destinationNameComponent}">
-        <datalist id="destination-list-1">
-        ${destinationListComponent}
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationNameTemplate}" list="destination-list-1">
+        ${destinationNameListTemplate}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -95,10 +108,10 @@ const createContentTemplate = (tripPoint) => {
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${descriptionComponent}</p>
+        <p class="event__destination-description">${descriptionTemplate}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${createPhotosTemplate().join('')}
+            ${picturesTemplate}
           </div>
         </div>
       </section>
@@ -125,7 +138,7 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   #handleRollDownClick = (evt) => {
     evt.preventDefault();
-    this._callback.rollUpClick();
+    this._callback.rollUpClick(TripFormEditView.parseTripPointToState(this._state));
   };
 
   setFormSubmitHandler = (callback) => {
@@ -135,19 +148,49 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(TripFormEditView.parseStateToTripPoint(this._state));
   };
 
-  static parseTripPointToState = (tripPoint) => ({...tripPoint,
-    offersByType: tripPoint.type,
-  });
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSave);
+    this.setRollUpClickHandler(this._callback.rollupEdit);
+  };
 
-  static parseStateToTripPoint = (state, offersByType) => {
+  #typeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+    });
+  };
+
+  #destinationToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      destinationNameTemplate: evt.target.value,
+    });
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelectorAll('.event__type-input').forEach((i) =>
+      i.addEventListener('click', this.#typeToggleHandler));
+
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
+  };
+
+  reset = (point) => {
+    this.updateElement(
+      TripFormEditView.parsePointToState(point)
+    );
+  };
+
+  static parseTripPointToState = (tripPoint) => (
+    {...tripPoint}
+  );
+
+  static parseStateToTripPoint = (state) => {
     const tripPoint = {...state};
 
-    tripPoint.offers = Array.from(Object.values(offersByType)[0]);
-
-    delete tripPoint.pointByType;
     return tripPoint;
   };
 }
