@@ -99,4 +99,9 @@ export default class TripPointPresenter {
     this.#changeData(tripPoint);
     this.#replaceFormWithPoint();
   };
+
+  destroy = () => {
+    remove(this.#tripPointComponent);
+    remove(this.#tripPointEditComponent);
+  };
 }

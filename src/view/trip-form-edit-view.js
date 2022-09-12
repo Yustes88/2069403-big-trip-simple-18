@@ -37,7 +37,7 @@ const createContentTemplate = (tripPoint) => {
   const creatTripPointOffers = () => {
     const pointOfferType = mockOffersByType.filter((el) => (el.type === type));
     return pointOfferType[0].offers.map((offer) => ` <div class="event__offer-selector">
-              <input class="event__offer-checkbox visually-hidden" id="event-offer-{offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked(offer)}>
+              <input class="event__offer-checkbox visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked(offer)}>
               <label class="event__offer-label" for="event-offer-${offer.id}">
               <span class="event__offer-title"> ${offer.title} </span>
               &plus;&euro;&nbsp;

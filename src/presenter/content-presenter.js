@@ -11,7 +11,7 @@ import { sortDate, sortPrice } from '../utile/sort-utile.js';
 
 export default class ContentPresenter {
   #mainContainer = null;
-  #tripPoint = null;
+  #tripPointModel = null;
   #contentPoint = null;
   #sourcedTripPoints = [];
   #tripPointsPresenter = new Map();
@@ -25,13 +25,13 @@ export default class ContentPresenter {
 
   constructor(mainContainer, tripPointModel){
     this.#mainContainer = mainContainer;
-    this.#tripPoint = tripPointModel;
+    this.#tripPointModel = tripPointModel;
 
   }
 
   init = () => {
-    this.#contentPoint = [...this.#tripPoint.points];
-    this.#sourcedTripPoints = [...this.#tripPoint.points];
+    this.#contentPoint = [...this.#tripPointModel.points];
+    this.#sourcedTripPoints = [...this.#tripPointModel.points];
 
     this.#sortTripPoints();
     this.#renderPoints();
@@ -71,14 +71,11 @@ export default class ContentPresenter {
 
   #sortTripPoints = (sortType) => {
     switch(sortType) {
-      case SORT_TYPES.DATE:
-        this.#contentPoint.sort(sortDate);
-        break;
       case SORT_TYPES.PRICE:
         this.#contentPoint.sort(sortPrice);
         break;
       default:
-        this.#contentPoint = [...this.#sourcedTripPoints];
+        this.#contentPoint.sort(sortDate);
     }
     this.#currentSortType = sortType;
   };
