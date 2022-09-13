@@ -22,11 +22,9 @@ const createContentTemplate = (tripPoint) => {
     </label>
     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1">
     <datalist id="destination-list-1">
-    <select>
     ${DESTINATIONS.map((destinationCity) => `
     <option value="${destinationCity}" ${selectedCity === destinationCity ? 'selected' : ''}></option>
        `).join(' ')}
-       </select>
     </datalist>`;
 
   const typeTemplate = createType(type);
