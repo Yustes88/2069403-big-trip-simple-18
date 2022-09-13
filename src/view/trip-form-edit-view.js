@@ -117,6 +117,8 @@ export default class TripFormEditView extends AbstractStatefulView {
     this._state = TripFormEditView.parseTripPointToState(tripPoint);
 
     this.#setInnerHandlers();
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
   }
 
   get template() {
@@ -160,6 +162,8 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollDownClickHandler(this._callback.rollDownClick);
   };
@@ -207,6 +211,8 @@ export default class TripFormEditView extends AbstractStatefulView {
         dateFormat: 'j m y H:i',
         defaultDate: this._state.dateFrom,
         onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
       },
     );
   };
