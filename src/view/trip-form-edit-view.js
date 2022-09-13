@@ -4,6 +4,9 @@ import { destinations } from '../mock/destinations-mock.js';
 import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
 import { humanizeDate } from '../utile/trip-point-utile.js';
 
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 const createType = (currentType) => OFFER_TYPES.map((pointType) =>
   `<div class="event__type-item">
 <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === pointType ? 'checked' : ''}>
