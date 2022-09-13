@@ -111,7 +111,7 @@ const createContentTemplate = (tripPoint) => {
 };
 
 export default class TripFormEditView extends AbstractStatefulView {
-
+  #datepicker = null;
   constructor(tripPoint) {
     super();
     this._state = TripFormEditView.parseTripPointToState(tripPoint);
@@ -122,6 +122,15 @@ export default class TripFormEditView extends AbstractStatefulView {
   get template() {
     return createContentTemplate(this._state);
   }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  };
 
   reset = (tripPoint) => {
     this.updateElement(
@@ -163,6 +172,18 @@ export default class TripFormEditView extends AbstractStatefulView {
     });
   };
 
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
   #destinationToggleHandler = (evt) => {
     evt.preventDefault();
     this.updateElement({
@@ -177,6 +198,30 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.updateElement({
       offers: selectOffers,
     });
+  };
+
+  #setStartDatePicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        dateFormat: 'j m y H:i',
+        defaultDate: this._state.dateFrom,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+  };
+
+  #setEndDatePicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        dateFormat: 'j m y H:i',
+        defaultDate: this._state.dateTo,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      },
+    );
   };
 
   #setInnerHandlers = () => {
