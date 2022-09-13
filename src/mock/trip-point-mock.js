@@ -22,7 +22,7 @@ export const generateTripPoint = () => {
     'basePrice': getRandomInteger(100, 2000),
     'dateFrom': dateMock.dateFrom,
     'dateTo': dateMock.dateTo,
-    'destination': getRandomInteger(1, 3),
+    'destination': getRandomInteger(0, 4),
     'id': nanoid(),
     'offers': getRandomElements(typeAndOffers.offers),
     'type': typeAndOffers.type,

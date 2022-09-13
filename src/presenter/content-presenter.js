@@ -6,7 +6,6 @@ import TripList from '../view/trip-list.js';
 import TripPointPresenter from './trip-point-presenter.js';
 import { SORT_TYPES } from '../const.js';
 import { sortDate, sortPrice } from '../utile/sort-utile.js';
-// import TripFormAddView from '../view/trip-form-add-view.js';
 
 
 export default class ContentPresenter {
