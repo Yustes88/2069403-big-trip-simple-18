@@ -169,7 +169,6 @@ export default class TripFormEditView extends AbstractStatefulView {
   };
 
   #typeToggleHandler = (evt) => {
-    evt.preventDefault();
     this.updateElement({
       type: evt.target.value,
       offers: []
@@ -189,7 +188,9 @@ export default class TripFormEditView extends AbstractStatefulView {
   };
 
   #destinationToggleHandler = (evt) => {
-    evt.preventDefault();
+    if(!(DESTINATIONS.includes(evt.target.value))) {
+      return;
+    }
     this.updateElement({
       destination: DESTINATIONS.indexOf(evt.target.value),
     });

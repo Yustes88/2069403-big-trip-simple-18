@@ -11,7 +11,7 @@ import { sortDate, sortPrice } from '../utile/sort-utile.js';
 export default class ContentPresenter {
   #mainContainer = null;
   #tripPointModel = null;
-  #contentPoint = null;
+  #contentPoints = null;
   #sourcedTripPoints = [];
   #tripPointsPresenter = new Map();
   #currentSortType = SORT_TYPES.DATE;
@@ -29,7 +29,7 @@ export default class ContentPresenter {
   }
 
   init = () => {
-    this.#contentPoint = [...this.#tripPointModel.points];
+    this.#contentPoints = [...this.#tripPointModel.points];
     this.#sourcedTripPoints = [...this.#tripPointModel.points];
 
     this.#sortTripPoints();
@@ -43,9 +43,9 @@ export default class ContentPresenter {
   };
 
   #renderPoints = () => {
-    if(this.#contentPoint.length) {
-      for(let i = 0; i < this.#contentPoint.length; i++) {
-        this.#renderPoint(this.#contentPoint[i]);
+    if(this.#contentPoints.length) {
+      for(let i = 0; i < this.#contentPoints.length; i++) {
+        this.#renderPoint(this.#contentPoints[i]);
       }
       this.#renderPointsList();
     }
@@ -71,10 +71,10 @@ export default class ContentPresenter {
   #sortTripPoints = (sortType) => {
     switch(sortType) {
       case SORT_TYPES.PRICE:
-        this.#contentPoint.sort(sortPrice);
+        this.#contentPoints.sort(sortPrice);
         break;
       default:
-        this.#contentPoint.sort(sortDate);
+        this.#contentPoints.sort(sortDate);
     }
     this.#currentSortType = sortType;
   };
@@ -101,7 +101,7 @@ export default class ContentPresenter {
   };
 
   #handleTripPointChange = (updatedTripPoint) => {
-    this.#contentPoint = updateItem(this.#contentPoint, updatedTripPoint);
+    this.#contentPoints = updateItem(this.#contentPoints, updatedTripPoint);
     this.#sourcedTripPoints = updateItem(this.#sourcedTripPoints, updatedTripPoint);
     this.#tripPointsPresenter.get(updatedTripPoint.id).init(updatedTripPoint);
 
