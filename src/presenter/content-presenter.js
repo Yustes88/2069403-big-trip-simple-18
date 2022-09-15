@@ -28,6 +28,10 @@ export default class ContentPresenter {
 
   }
 
+  get tripPoints() {
+    return this.#tripPointModel.points;
+  }
+
   init = () => {
     this.#contentPoints = [...this.#tripPointModel.points];
     this.#sourcedTripPoints = [...this.#tripPointModel.points];
