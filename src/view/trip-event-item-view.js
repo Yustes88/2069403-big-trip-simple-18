@@ -1,15 +1,14 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { destinations, offer } from '../mock/trip-point-mock.js';
+import { destinations } from '../mock/destinations-mock.js';
 import { humanizeHour, humanizeStartDate } from '../utile/trip-point-utile.js';
 
 
 const createContentTemplate = (tripPoints) => {
-  const {basePrice, destination, dateFrom, dateTo, type} = tripPoints;
+  const {basePrice, destination, dateFrom, dateTo, type, offers} = tripPoints;
 
   const destinationName = destinations.find((el) => (el.id === destination)).name;
-  const pointOfferType = offer.filter((el) => (el.type === type));
 
-  const selectedOffers = pointOfferType.map((el) => `<li class="event__offer">
+  const selectedOffers = offers.map((el) => `<li class="event__offer">
       <span class="event__offer-title">${el.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${el.price}</span>

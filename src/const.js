@@ -1,8 +1,14 @@
 const OFFER_TYPES = ['taxi','bus','train','ship','drive','flight','check-in', 'sightseeing','restaurant'];
 
-const OFFERS = ['Add luggage', 'Choose seats', 'Add meal', 'Comfort class', 'Business class'];
+const OFFERS_EXTRA = ['Add luggage', 'Choose seats', 'Add meal', 'Comfort class', 'Business class'];
 
 const DESTINATIONS = ['Chamonix', 'Amsterdam', 'Rome', 'Madrid', 'Geneva'];
+
+const DESCRIPTIONS = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.'
+];
 
 const TRIP_POINT_ITEMS = 10;
 
@@ -16,4 +22,4 @@ const SORT_TYPES = {
   PRICE: 'price',
 };
 
-export {OFFER_TYPES, DESTINATIONS, OFFERS, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES};
+export {OFFER_TYPES, DESTINATIONS, DESCRIPTIONS, OFFERS_EXTRA, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES};

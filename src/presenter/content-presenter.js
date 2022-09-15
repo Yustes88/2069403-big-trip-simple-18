@@ -10,10 +10,10 @@ import { sortDate, sortPrice } from '../utile/sort-utile.js';
 
 export default class ContentPresenter {
   #mainContainer = null;
-  #tripPoint = null;
-  #contentPoint = [];
+  #tripPointModel = null;
+  #contentPoints = null;
   #sourcedTripPoints = [];
-  #tripPointPresenter = new Map();
+  #tripPointsPresenter = new Map();
   #currentSortType = SORT_TYPES.DATE;
 
 
@@ -24,39 +24,57 @@ export default class ContentPresenter {
 
   constructor(mainContainer, tripPointModel){
     this.#mainContainer = mainContainer;
-    this.#tripPoint = tripPointModel;
+    this.#tripPointModel = tripPointModel;
 
   }
 
   init = () => {
-    this.#contentPoint = [...this.#tripPoint.points];
-    this.#sourcedTripPoints = [...this.#tripPoint.points];
+    this.#contentPoints = [...this.#tripPointModel.points];
+    this.#sourcedTripPoints = [...this.#tripPointModel.points];
 
-
-    this.#renderContent();
+    this.#sortTripPoints();
+    this.#renderPoints();
   };
 
-  #handleModeChange = () => {
-    this.#tripPointPresenter.forEach((presenter) => presenter.resetView());
+  #renderPoint = (tripPoint) => {
+    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element, this.#handleTripPointChange, this.#handleModeChange);
+    tripPointPresenter.init(tripPoint);
+    this.#tripPointsPresenter.set(tripPoint.id, tripPointPresenter);
   };
 
-  #handleTripPointChange = (updatedTripPoint) => {
-    this.#contentPoint = updateItem(this.#contentPoint, updatedTripPoint);
-    this.#sourcedTripPoints = updateItem(this.#sourcedTripPoints, updatedTripPoint);
-    this.#tripPointPresenter.get(updatedTripPoint.id).init(updatedTripPoint);
+  #renderPoints = () => {
+    if(this.#contentPoints.length) {
+      for(let i = 0; i < this.#contentPoints.length; i++) {
+        this.#renderPoint(this.#contentPoints[i]);
+      }
+      this.#renderPointsList();
+    }
+    else {
+      this.#renderPointsListEmpty();
+    }
+    this.#renderSort();
+  };
 
+  #renderPointsListEmpty = () => {
+    render(this.#pointsListEmptyComponent, this.#mainContainer);
+  };
+
+  #renderPointsList = () => {
+    render(this.#tripListComponent, this.#mainContainer);
+  };
+
+  #renderSort = () => {
+    render(this.#sortFormComponent, this.#mainContainer, RenderPosition.AFTERBEGIN);
+    this.#sortFormComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #sortTripPoints = (sortType) => {
     switch(sortType) {
-      case SORT_TYPES.DATE:
-        this.#contentPoint.sort(sortDate);
-        break;
       case SORT_TYPES.PRICE:
-        this.#contentPoint.sort(sortPrice);
+        this.#contentPoints.sort(sortPrice);
         break;
       default:
-        this.#contentPoint = [...this.#sourcedTripPoints];
+        this.#contentPoints.sort(sortDate);
     }
     this.#currentSortType = sortType;
   };
@@ -69,50 +87,23 @@ export default class ContentPresenter {
 
     this.#sortTripPoints(sortType);
     this.#clearPointList();
-    this.#renderPointsList();
-  };
-
-  #renderSort = () => {
-    render(this.#sortFormComponent, this.#mainContainer, RenderPosition.AFTERBEGIN);
-    this.#sortFormComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
-  };
-
-
-  #renderPoint = (tripPoint) => {
-    const tripPointPresenter = new TripPointPresenter(this.#tripListComponent.element, this.#handleTripPointChange, this.#handleModeChange);
-    tripPointPresenter.init(tripPoint);
-    this.#tripPointPresenter.set(tripPoint.id, tripPointPresenter);
-  };
-
-  #renderPoints = () => {
-    for(let i = 0; i < this.#contentPoint.length; i++) {
-      this.#renderPoint(this.#contentPoint[i]);
-    }
-  };
-
-  #clearPointList = () => {
-    this.#tripPointPresenter.forEach((presenter) => presenter.destroy());
-    this.#tripPointPresenter.clear();
-  };
-
-  #renderPointsList = () => {
-    render(this.#tripListComponent, this.#mainContainer);
     this.#renderPoints();
   };
 
-  #renderPointsListEmpty = () => {
-    render(this.#pointsListEmptyComponent, this.#mainContainer, RenderPosition.BEFOREEND);
+
+  #clearPointList = () => {
+    this.#tripPointsPresenter.forEach((presenter) => presenter.destroy());
+    this.#tripPointsPresenter.clear();
   };
 
+  #handleModeChange = () => {
+    this.#tripPointsPresenter.forEach((presenter) => presenter.resetView());
+  };
 
-  #renderContent = () => {
-    if(this.#contentPoint.length === 0) {
-      this.#renderPointsListEmpty();
-      return;
-    }
-
-    this.#renderSort();
-    this.#renderPointsList();
+  #handleTripPointChange = (updatedTripPoint) => {
+    this.#contentPoints = updateItem(this.#contentPoints, updatedTripPoint);
+    this.#sourcedTripPoints = updateItem(this.#sourcedTripPoints, updatedTripPoint);
+    this.#tripPointsPresenter.get(updatedTripPoint.id).init(updatedTripPoint);
 
   };
 

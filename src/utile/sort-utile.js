@@ -17,9 +17,9 @@ const getWeightForNullDate = (dateA, dateB) => {
 };
 
 const sortDate = (tripPointA, tripPointB) => {
-  const weight = getWeightForNullDate(tripPointA.dueDate, tripPointB.dueDate);
+  const weight = getWeightForNullDate(tripPointA.dateFrom, tripPointB.dateFrom);
 
-  return weight ?? dayjs(tripPointA.dueDate).diff(dayjs(tripPointB.dueDate));
+  return weight ?? dayjs(tripPointA.dateFrom).diff(dayjs(tripPointB.dateFrom));
 };
 
 const sortPrice = (tripPointA, tripPointB) => tripPointB.basePrice - tripPointA.basePrice;

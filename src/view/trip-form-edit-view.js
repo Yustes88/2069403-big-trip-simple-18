@@ -1,45 +1,51 @@
 import { DESTINATIONS, OFFER_TYPES } from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
-import { destinations, offer } from '../mock/trip-point-mock.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { destinations } from '../mock/destinations-mock.js';
+import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
 import { humanizeDate } from '../utile/trip-point-utile.js';
 
+const createType = (currentType) => OFFER_TYPES.map((pointType) =>
+  `<div class="event__type-item">
+<input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === pointType ? 'checked' : ''}>
+<label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${pointType}</label>
+</div>`).join('');
+
+
+const createPictures = (pictures) => pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
 
 const createContentTemplate = (tripPoint) => {
-  const {basePrice, destination, dateFrom, dateTo, type, pointOffer} = tripPoint;
+  const {basePrice, destination, dateFrom, dateTo, type, offers} = tripPoint;
 
-  const destinationNameComponent = destinations.find((el) => (el.id === destination)).name;
-  const pointOfferType = offer.filter((el) => (el.type === type));
-  const descriptionComponent = destinations.find((el) => (el.id === destination)).description;
-  const photoComponent = destinations.find((el) => (el.id === destination)).pictures[0].src;
-  const photoDescriptionComponent = destinations.find((el) => (el.id === destination)).pictures[0].description;
+  const createDestinationListTemplate = (selectedCity) => `
+    <label class="event__label  event__type-output" for="event-destination-1">
+    ${type}
+    </label>
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1">
+    <datalist id="destination-list-1">
+    ${DESTINATIONS.map((destinationCity) => `
+    <option value="${destinationCity}" ${selectedCity === destinationCity ? 'selected' : ''}>`).join(' ')}
+    </datalist>`;
 
-  const createPhotosTemplate = () => photoComponent.map((picture) =>
-    `<img class="event__photo" src=${picture} alt='${photoDescriptionComponent}'>`);
+  const typeTemplate = createType(type);
+  const destinationNameListTemplate = createDestinationListTemplate(destinations[destination].name);
+  const picturesTemplate = createPictures(destinations[destination].pictures);
 
-  const createType = (currentType) => OFFER_TYPES.map((pointType) =>
-    `<div class="event__type-item">
-   <input id="event-type-${pointType}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === 'checked'}>
-   <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}">${pointType}</label>
-   </div>`).join('');
 
-  const createDestinationNamesListTemplate = () => (
-    DESTINATIONS.map((name) =>
-      `<option value="${name}"></option>`));
+  const isOfferChecked = (offer) => offers.includes(offer) ? 'checked' : '';
 
-  const destinationListComponent = createDestinationNamesListTemplate(destination);
-
-  const tripPointOfferComponent = pointOfferType.map((el) => {
-    const checked = (pointOffer === el.id ) ? 'checked' : '';
-    return ` <div class="event__offer-selector">
-              <input class="event__offer-checkbox visually-hidden" id="event-offer-luggage-1" type="checkbox" ${checked} name="event-offer-luggage">
-              <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title"> ${el.title} </span>
+  const creatTripPointOffers = () => {
+    const pointOfferType = mockOffersByType.filter((el) => (el.type === type));
+    return pointOfferType[0].offers.map((offer) => ` <div class="event__offer-selector">
+              <input class="event__offer-checkbox visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isOfferChecked(offer)}>
+              <label class="event__offer-label" for="event-offer-${offer.id}">
+              <span class="event__offer-title"> ${offer.title} </span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price"> ${el.price} </span>
-              </div>`;
-  });
+              <span class="event__offer-price"> ${offer.price} </span>
+              </div>`).join(' ');
+  };
 
-  const typeComponent = createType(type);
+  const offersTemplate = creatTripPointOffers();
+
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -53,18 +59,12 @@ const createContentTemplate = (tripPoint) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${typeComponent}
+            ${typeTemplate}
           </fieldset>
         </div>
       </div>
       <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-        </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="${destinationNameComponent}">
-        <datalist id="destination-list-1">
-        ${destinationListComponent}
-        </datalist>
+        ${destinationNameListTemplate}
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -90,15 +90,15 @@ const createContentTemplate = (tripPoint) => {
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-        ${tripPointOfferComponent}
+        ${offersTemplate}
         </div>
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${descriptionComponent}</p>
+        <p class="event__destination-description">${destinations[destination].description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${createPhotosTemplate().join('')}
+            ${picturesTemplate}
           </div>
         </div>
       </section>
@@ -107,26 +107,33 @@ const createContentTemplate = (tripPoint) => {
 </li>`);
 };
 
-export default class TripFormEditView extends AbstractView {
-  #tripPoint = null;
+export default class TripFormEditView extends AbstractStatefulView {
 
   constructor(tripPoint) {
     super();
-    this.#tripPoint = tripPoint;
+    this._state = TripFormEditView.parseTripPointToState(tripPoint);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createContentTemplate(this.#tripPoint);
+    return createContentTemplate(this._state);
   }
 
-  setRollUpClickHandler = (callback) => {
-    this._callback.rollUpClick = callback;
+  reset = (tripPoint) => {
+    this.updateElement(
+      TripFormEditView.parseTripPointToState(tripPoint)
+    );
+  };
+
+  setRollDownClickHandler = (callback) => {
+    this._callback.rollDownClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleRollDownClick);
   };
 
   #handleRollDownClick = (evt) => {
     evt.preventDefault();
-    this._callback.rollUpClick();
+    this._callback.rollDownClick(TripFormEditView.parseStateToTripPoint(this._state));
   };
 
   setFormSubmitHandler = (callback) => {
@@ -136,8 +143,58 @@ export default class TripFormEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(TripFormEditView.parseStateToTripPoint(this._state));
   };
 
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollDownClickHandler(this._callback.rollDownClick);
+  };
+
+  #typeToggleHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value,
+      offers: []
+    });
+  };
+
+  #destinationToggleHandler = (evt) => {
+    if(!(DESTINATIONS.includes(evt.target.value))) {
+      return;
+    }
+    this.updateElement({
+      destination: DESTINATIONS.indexOf(evt.target.value),
+    });
+  };
+
+  #eventSelectOffersToggleHandler = () => {
+    const selectOffers = [];
+    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
+      .forEach((checkbox) => checkbox.checked ? selectOffers.push(mockOffers[Number(checkbox.dataset.id)]) : '');
+    this.updateElement({
+      offers: selectOffers,
+    });
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelectorAll('.event__type-input').forEach((evtType) =>
+      evtType.addEventListener('click', this.#typeToggleHandler));
+
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
+
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+  };
+
+
+  static parseTripPointToState = (tripPoint) => (
+    {...tripPoint}
+  );
+
+  static parseStateToTripPoint = (state) => {
+    const tripPoint = {...state};
+
+    return tripPoint;
+  };
 }
 

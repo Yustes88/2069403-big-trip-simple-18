@@ -1,7 +1,7 @@
 # Проект «Большое путешествие (простой)»
 
 * Студент: [Обручкова Юлия](https://up.htmlacademy.ru/ecmascript/18/user/2069403).
-* Наставник: [Дмитрий (sench) Железцов](https://htmlacademy.ru/profile/sench).
+* Наставник: [Ирина Серышева](https://htmlacademy.ru/profile/id2070039).
 
 ---
 
