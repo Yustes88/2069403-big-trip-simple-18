@@ -213,6 +213,7 @@ export default class TripFormEditView extends AbstractStatefulView {
         defaultDate: eventStartTiem.value,
         onChange: this.#startDateChangeHandler,
         enableTime: true,
+        'time_24hr': true,
       },
     );
   };
@@ -226,6 +227,7 @@ export default class TripFormEditView extends AbstractStatefulView {
         defaultDate: eventEndTime.value,
         onChange: this.#endDateChangeHandler,
         enableTime: true,
+        'time_24hr': true,
       },
     );
   };
