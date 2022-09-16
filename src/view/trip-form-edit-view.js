@@ -206,12 +206,12 @@ export default class TripFormEditView extends AbstractStatefulView {
   };
 
   #setStartDatePicker = () => {
-    const eventStartTiem = this.element.querySelector('[name="event-start-time"]');
+    const eventStartTime = this.element.querySelector('[id="event-start-time-1"]');
     this.#datepicker = flatpickr(
-      eventStartTiem,
+      eventStartTime,
       {
         dateFormat: 'd/m/y H:i',
-        defaultDate: eventStartTiem.value,
+        defaultDate: eventStartTime.value,
         onChange: this.#startDateChangeHandler,
         enableTime: true,
         'time_24hr': true,
@@ -220,7 +220,7 @@ export default class TripFormEditView extends AbstractStatefulView {
   };
 
   #setEndDatePicker = () => {
-    const eventEndTime = this.element.querySelector('[name="event-end-time"]');
+    const eventEndTime = this.element.querySelector('[id="event-end-time-1"]');
     this.#datepicker = flatpickr(
       eventEndTime,
       {
