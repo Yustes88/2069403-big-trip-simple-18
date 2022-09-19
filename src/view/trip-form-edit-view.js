@@ -4,6 +4,9 @@ import { destinations } from '../mock/destinations-mock.js';
 import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
 import { humanizeDate } from '../utile/trip-point-utile.js';
 
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 const createType = (currentType) => OFFER_TYPES.map((pointType) =>
   `<div class="event__type-item">
 <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === pointType ? 'checked' : ''}>
@@ -108,7 +111,7 @@ const createContentTemplate = (tripPoint) => {
 };
 
 export default class TripFormEditView extends AbstractStatefulView {
-#datePicker = null;
+  #datepicker = null;
 
   constructor(tripPoint) {
     super();
@@ -120,14 +123,25 @@ export default class TripFormEditView extends AbstractStatefulView {
 
 
     this.#setInnerHandlers();
-    this.
+
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
   }
 
   get template() {
     return createContentTemplate(this._state, this.#offers, this.#cities);
   }
 
+
   reset = (tripPoint, offers, cities) => {
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  };
     this.updateElement(
       TripFormEditView.parseTripPointToState(tripPoint, offers, cities)
     );
@@ -169,6 +183,8 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollDownClickHandler(this._callback.rollDownClick);
   };
@@ -177,6 +193,18 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.updateElement({
       type: evt.target.value,
       offers: []
+    });
+  };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
     });
   };
 
@@ -196,6 +224,34 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.updateElement({
       offers: selectOffers,
     });
+  };
+
+  #setStartDatePicker = () => {
+    const eventStartTime = this.element.querySelector('#event-start-time-1');
+    this.#datepicker = flatpickr(
+      eventStartTime,
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: eventStartTime.value,
+        onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      },
+    );
+  };
+
+  #setEndDatePicker = () => {
+    const eventEndTime = this.element.querySelector('#event-end-time-1');
+    this.#datepicker = flatpickr(
+      eventEndTime,
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: eventEndTime.value,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      },
+    );
   };
 
   #setInnerHandlers = () => {
@@ -218,4 +274,4 @@ export default class TripFormEditView extends AbstractStatefulView {
     return tripPoint;
   };
 }
-
+}
