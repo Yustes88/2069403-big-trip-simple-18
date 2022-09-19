@@ -1,4 +1,6 @@
+import { UpdateType, UserAction } from '../const.js';
 import { remove, render, replace } from '../framework/render.js';
+import TripsModel from '../model/trip-point-model.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
@@ -9,13 +11,14 @@ const Mode = {
 
 export default class TripPointPresenter {
   #tripPointListContainer = null;
-  #tripPoint = null;
-
   #tripPointComponent = null;
   #tripPointEditComponent = null;
-
   #changeData = null;
   #changeMode = null;
+
+  #tripPoint = null;
+  #offers = null;
+  #destinations = null;
   #mode = Mode.DEFAULT;
 
   constructor(tripPointListContainer, changeData, changeMode) {
@@ -24,14 +27,18 @@ export default class TripPointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (tripPoint) => {
+  init = (tripPoint, offers, destinations) => {
     this.#tripPoint = tripPoint;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.tripPointsModel = new TripsModel();
+    this.tripPoints = this.tripPointsModel.tripPoint;
 
     const prevTripPointComponent = this.#tripPointComponent;
     const prevTripPointEditComponent = this.#tripPointEditComponent;
 
-    this.#tripPointComponent = new TripEventItemView(tripPoint);
-    this.#tripPointEditComponent = new TripFormEditView(tripPoint);
+    this.#tripPointComponent = new TripEventItemView(this.#tripPoint, this.tripPointsModel, this.#offers, this.#destinations);
+    this.#tripPointEditComponent = new TripFormEditView(this.#tripPoint, this.#offers, this.#destinations);
 
     this.#tripPointComponent.setRollUpClickHandler(this.#handleRollUpClick);
 
@@ -58,7 +65,7 @@ export default class TripPointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
-      this.#tripPointEditComponent.reset(this.#tripPoint);
+      this.#tripPointEditComponent.reset(this.#tripPoint, this.#offers, this.#destinations);
       this.#replaceFormWithPoint();
     }
   };
@@ -96,8 +103,13 @@ export default class TripPointPresenter {
   };
 
   #handleFormSubmit = (tripPoint) => {
-    this.#changeData(tripPoint);
     this.#replaceFormWithPoint();
+    this.#changeData(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      tripPoint,
+    );
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   destroy = () => {

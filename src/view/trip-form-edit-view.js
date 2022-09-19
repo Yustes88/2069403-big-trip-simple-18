@@ -108,22 +108,43 @@ const createContentTemplate = (tripPoint) => {
 };
 
 export default class TripFormEditView extends AbstractStatefulView {
+#datePicker = null;
 
   constructor(tripPoint) {
     super();
+    if(!tripPoint) {
+      tripPoint = NewPoint;
+    }
+
     this._state = TripFormEditView.parseTripPointToState(tripPoint);
 
+
     this.#setInnerHandlers();
+    this.
   }
 
   get template() {
-    return createContentTemplate(this._state);
+    return createContentTemplate(this._state, this.#offers, this.#cities);
   }
 
-  reset = (tripPoint) => {
+  reset = (tripPoint, offers, cities) => {
     this.updateElement(
-      TripFormEditView.parseTripPointToState(tripPoint)
+      TripFormEditView.parseTripPointToState(tripPoint, offers, cities)
     );
+  };
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+      this.#endDatepicker = null;
+    }
   };
 
   setRollDownClickHandler = (callback) => {
@@ -164,7 +185,7 @@ export default class TripFormEditView extends AbstractStatefulView {
       return;
     }
     this.updateElement({
-      destination: DESTINATIONS.indexOf(evt.target.value),
+      destination: this.#cities.find((city) => evt.target.value === city.name).id,
     });
   };
 
