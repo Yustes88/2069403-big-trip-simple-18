@@ -23,15 +23,15 @@ const createContentTemplate = (tripPoint) => {
     <label class="event__label  event__type-output" for="event-destination-1">
     ${type}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1">
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1" required>
     <datalist id="destination-list-1">
     ${DESTINATIONS.map((destinationCity) => `
     <option value="${destinationCity}" ${selectedCity === destinationCity ? 'selected' : ''}>`).join(' ')}
     </datalist>`;
 
   const typeTemplate = createType(type);
-  const destinationNameListTemplate = createDestinationListTemplate(destinations[destination].name);
-  const picturesTemplate = createPictures(destinations[destination].pictures);
+  const destinationNameListTemplate = createDestinationListTemplate(destination !== undefined ? destinations[destination].name : '');
+  const picturesTemplate = destination !== undefined ? createPictures(destinations[destination].pictures) : '';
 
 
   const isOfferChecked = (offer) => offers.includes(offer) ? 'checked' : '';
@@ -98,7 +98,7 @@ const createContentTemplate = (tripPoint) => {
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destinations[destination].description}</p>
+        <p class="event__destination-description">${destination !== undefined ? destinations[destination].description : ''}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
             ${picturesTemplate}

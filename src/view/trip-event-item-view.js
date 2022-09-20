@@ -6,7 +6,7 @@ import { humanizeHour, humanizeStartDate } from '../utile/trip-point-utile.js';
 const createContentTemplate = (tripPoints) => {
   const {basePrice, destination, dateFrom, dateTo, type, offers} = tripPoints;
 
-  const destinationName = destinations.find((el) => (el.id === destination)).name;
+  const destinationName = destination !== undefined ? destinations.find((el) => (el.id === destination)).name : '';
 
   const selectedOffers = offers.map((el) => `<li class="event__offer">
       <span class="event__offer-title">${el.title}</span>
