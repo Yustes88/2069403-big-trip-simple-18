@@ -286,4 +286,3 @@ export default class TripFormEditView extends AbstractStatefulView {
     return tripPoint;
   };
 }
-
