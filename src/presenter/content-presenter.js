@@ -45,10 +45,8 @@ export default class ContentPresenter {
     switch(this.#currentSortType) {
       case SORT_TYPES.PRICE:
         return filteredTripPoint.sort(sortPrice);
-      case SORT_TYPES.DATE:
-        return filteredTripPoint.sort(sortDate);
     }
-    return filteredTripPoint;
+    return filteredTripPoint.sort(sortDate);
   }
 
   init = () => {

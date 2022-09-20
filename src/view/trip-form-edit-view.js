@@ -81,7 +81,7 @@ const createContentTemplate = (tripPoint) => {
           <span class="visually-hidden">Price</span>
           ${basePrice}&euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
@@ -192,6 +192,13 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
   //check
   #typeToggleHandler = (evt) => {
     this.updateElement({
@@ -272,6 +279,8 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
   };
 
   //check
