@@ -1,17 +1,27 @@
-import { render } from './framework/render.js';
-import { generateFilter } from './mock/filters-mock.js';
+import FilterModel from './model/filter-model.js';
 import TripsModel from './model/trip-point-model.js';
 import ContentPresenter from './presenter/content-presenter.js';
-import FiltersFormView from './view/filters-form-view.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 
-
-const siteFilterElement = document.querySelector('.trip-controls__filters');
+const tripControlElement = document.querySelector('.trip-main__trip-controls');
 const siteContentWrapperElement = document.querySelector('.trip-events');
+const newButtonElement = document.querySelector('.trip-main__event-add-btn');
 
 const tripPointModel = new TripsModel();
-const contentPresenter = new ContentPresenter(siteContentWrapperElement, tripPointModel);
+const filterModel = new FilterModel();
+const contentPresenter = new ContentPresenter(siteContentWrapperElement, tripPointModel, filterModel);
+const filterPresenterElement = new FilterPresenter(tripControlElement, filterModel, tripPointModel);
 
-const filters = generateFilter(tripPointModel.points);
+const handleNewEventFormClose = () => {
+  newButtonElement.disabled = false;
+};
 
-render(new FiltersFormView(filters), siteFilterElement);
+const handleNewEventButtonClick = () => {
+  contentPresenter.createPoint(handleNewEventFormClose);
+  newButtonElement.disabled = true;
+};
+
+newButtonElement.addEventListener('click', handleNewEventButtonClick);
+
 contentPresenter.init();
+filterPresenterElement.init();

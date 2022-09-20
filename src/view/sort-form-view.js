@@ -28,8 +28,15 @@ const createContentTemplate = () => (
 );
 
 export default class SortFormView extends AbstractView {
+  #currentSortType = null;
+
+  constructor(currentSortType) {
+    super();
+    this.#currentSortType = currentSortType;
+  }
+
   get template() {
-    return createContentTemplate();
+    return createContentTemplate(this.#currentSortType);
   }
 
   setSortTypeChangeHandler = (callback) => {
