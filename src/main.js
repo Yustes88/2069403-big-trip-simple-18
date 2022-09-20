@@ -12,13 +12,13 @@ const filterModel = new FilterModel();
 const contentPresenter = new ContentPresenter(siteContentWrapperElement, tripPointModel, filterModel);
 const filterPresenterElement = new FilterPresenter(tripControlElement, filterModel, tripPointModel);
 
-const handleNewEventFormClose = () => {
-  newButtonElement.disabled = false;
+const handleNewTripPointFormClose = () => {
+  newButtonElement.element.disabled = false;
 };
 
 const handleNewEventButtonClick = () => {
-  contentPresenter.createPoint(handleNewEventFormClose);
-  newButtonElement.disabled = true;
+  contentPresenter.createPoint(handleNewTripPointFormClose);
+  newButtonElement.element.disabled = true;
 };
 
 newButtonElement.addEventListener('click', handleNewEventButtonClick);
