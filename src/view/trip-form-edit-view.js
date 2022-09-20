@@ -2,7 +2,7 @@ import { DESTINATIONS, NewPoint, OFFER_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations } from '../mock/destinations-mock.js';
 import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
-import { humanizeDate } from '../utile/trip-point-utile.js';
+import { humanizeDate, isPriceNumber } from '../utile/trip-point-utile.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -79,9 +79,9 @@ const createContentTemplate = (tripPoint) => {
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
-          ${basePrice}&euro;
+          &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${Number(basePrice)}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
@@ -194,6 +194,9 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
+    if(!isPriceNumber(evt.target.value)) {
+      evt.target.value = '';
+    }
     this._setState({
       basePrice: evt.target.value,
     });
