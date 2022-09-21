@@ -1,5 +1,6 @@
 import { UpdateType, UserAction } from '../const.js';
 import { remove, render, replace } from '../framework/render.js';
+import { isDatesSame, isPriceSame } from '../utile/trip-point-utile.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
@@ -108,18 +109,15 @@ export default class TripPointPresenter {
   };
 
   //check
-  #handleFormSubmit = (tripPoint) => {
-    const updatePoint = {...tripPoint};
-    delete updatePoint.type;
-    const currentPoint = {...this.#tripPoint};
-    delete currentPoint.type;
-
-    const isMinorUpdate = JSON.stringify(updatePoint) !== JSON.stringify(currentPoint);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+    !isDatesSame(this.#tripPoint, update) ||
+    !isPriceSame(this.#tripPoint, update);
 
     this.#changeData(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
-      tripPoint,
+      update,
     );
     this.#replaceFormWithPoint();
   };
