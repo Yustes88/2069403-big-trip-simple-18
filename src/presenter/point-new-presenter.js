@@ -24,7 +24,8 @@ export default class TripPointNewPresenter {
 
     this.#pointEditComponent = new TripFormEditView();
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#pointEditComponent.setDeleteClickHandler(this.#formDeleteClickHandler);
+    this.#pointEditComponent.setRollDownClickHandler(this.#handleRollDownClick);
 
     render(this.#pointEditComponent, this.#tripListContainer.element, RenderPosition.AFTERBEGIN);
 
@@ -52,9 +53,13 @@ export default class TripPointNewPresenter {
     );
   };
 
-  #handleDeleteClick = () => {
+  #formDeleteClickHandler = () => {
     this.destroy();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleRollDownClick = () => {
+    this.destroy();
   };
 
   //check

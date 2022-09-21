@@ -38,9 +38,10 @@ export default class ContentPresenter {
   }
 
   get tripPoints() {
+    const filterType = this.#filterModel.filter;
     const tripPoints = this.#tripPointModel.tripPoint;
-    this.#filterType = this.#filterModel.filter;
-    const filteredTripPoint = filter[this.#filterType](tripPoints);
+
+    const filteredTripPoint = filter[filterType](tripPoints);
 
     switch(this.#currentSortType) {
       case SORT_TYPES.PRICE:

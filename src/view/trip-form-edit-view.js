@@ -179,7 +179,7 @@ export default class TripFormEditView extends AbstractStatefulView {
   //check
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick(TripFormEditView.parseStateToPoint(this._state));
+    this._callback.deleteClick(TripFormEditView.parseStateToTripPoint(this._state));
   };
 
   //check
