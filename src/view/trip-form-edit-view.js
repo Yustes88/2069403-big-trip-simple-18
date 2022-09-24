@@ -1,8 +1,8 @@
-import { DESTINATIONS, OFFER_TYPES } from '../const.js';
+import { DESTINATIONS, NEW_POINT, OFFER_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations } from '../mock/destinations-mock.js';
 import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
-import { humanizeDate } from '../utile/trip-point-utile.js';
+import { humanizeDate, isPriceNumber } from '../utile/trip-point-utile.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -23,15 +23,15 @@ const createContentTemplate = (tripPoint) => {
     <label class="event__label  event__type-output" for="event-destination-1">
     ${type}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1">
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-1" required>
     <datalist id="destination-list-1">
     ${DESTINATIONS.map((destinationCity) => `
     <option value="${destinationCity}" ${selectedCity === destinationCity ? 'selected' : ''}>`).join(' ')}
     </datalist>`;
 
   const typeTemplate = createType(type);
-  const destinationNameListTemplate = createDestinationListTemplate(destinations[destination].name);
-  const picturesTemplate = createPictures(destinations[destination].pictures);
+  const destinationNameListTemplate = createDestinationListTemplate(destination ? destinations[destination].name : '');
+  const picturesTemplate = destination ? createPictures(destinations[destination].pictures) : '';
 
 
   const isOfferChecked = (offer) => offers.includes(offer) ? 'checked' : '';
@@ -79,9 +79,9 @@ const createContentTemplate = (tripPoint) => {
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
-          ${basePrice}&euro;
+          &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${Number(basePrice)}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
@@ -98,7 +98,7 @@ const createContentTemplate = (tripPoint) => {
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destinations[destination].description}</p>
+        <p class="event__destination-description">${destination ? destinations[destination].description : ''}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
             ${picturesTemplate}
@@ -112,9 +112,12 @@ const createContentTemplate = (tripPoint) => {
 
 export default class TripFormEditView extends AbstractStatefulView {
   #datepicker = null;
-  constructor(tripPoint) {
+
+  constructor(tripPoint = NEW_POINT) {
     super();
+
     this._state = TripFormEditView.parseTripPointToState(tripPoint);
+
 
     this.#setInnerHandlers();
     this.#setStartDatePicker();
@@ -140,34 +143,63 @@ export default class TripFormEditView extends AbstractStatefulView {
     );
   };
 
+  //check
   setRollDownClickHandler = (callback) => {
     this._callback.rollDownClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleRollDownClick);
   };
 
+  //check
   #handleRollDownClick = (evt) => {
     evt.preventDefault();
-    this._callback.rollDownClick(TripFormEditView.parseStateToTripPoint(this._state));
+    this._callback.rollDownClick();
   };
 
+  //check
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
+  //check
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  };
+
+  //check
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(TripFormEditView.parseStateToTripPoint(this._state));
   };
 
+  //check
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(TripFormEditView.parseStateToTripPoint(this._state));
+  };
+
+  //check
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setStartDatePicker();
     this.#setEndDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollDownClickHandler(this._callback.rollDownClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    if(!isPriceNumber(evt.target.value)) {
+      evt.target.value = '';
+    }
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
+  //check
   #typeToggleHandler = (evt) => {
     this.updateElement({
       type: evt.target.value,
@@ -175,18 +207,21 @@ export default class TripFormEditView extends AbstractStatefulView {
     });
   };
 
+  //check
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
       dateFrom: userDate,
     });
   };
 
+  //check
   #endDateChangeHandler = ([userDate]) => {
     this.updateElement({
       dateTo: userDate,
     });
   };
 
+  //check
   #destinationToggleHandler = (evt) => {
     if(!(DESTINATIONS.includes(evt.target.value))) {
       return;
@@ -196,6 +231,7 @@ export default class TripFormEditView extends AbstractStatefulView {
     });
   };
 
+  //check
   #eventSelectOffersToggleHandler = () => {
     const selectOffers = [];
     Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
@@ -205,6 +241,7 @@ export default class TripFormEditView extends AbstractStatefulView {
     });
   };
 
+  //check
   #setStartDatePicker = () => {
     const eventStartTime = this.element.querySelector('#event-start-time-1');
     this.#datepicker = flatpickr(
@@ -219,6 +256,7 @@ export default class TripFormEditView extends AbstractStatefulView {
     );
   };
 
+  //check
   #setEndDatePicker = () => {
     const eventEndTime = this.element.querySelector('#event-end-time-1');
     this.#datepicker = flatpickr(
@@ -233,6 +271,7 @@ export default class TripFormEditView extends AbstractStatefulView {
     );
   };
 
+  //TODO
   #setInnerHandlers = () => {
     this.element.querySelectorAll('.event__type-input').forEach((evtType) =>
       evtType.addEventListener('click', this.#typeToggleHandler));
@@ -240,17 +279,19 @@ export default class TripFormEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
   };
 
-
+  //check
   static parseTripPointToState = (tripPoint) => (
     {...tripPoint}
   );
 
+  //check
   static parseStateToTripPoint = (state) => {
     const tripPoint = {...state};
 
     return tripPoint;
   };
 }
-

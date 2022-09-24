@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const OFFER_TYPES = ['taxi','bus','train','ship','drive','flight','check-in', 'sightseeing','restaurant'];
 
 const OFFERS_EXTRA = ['Add luggage', 'Choose seats', 'Add meal', 'Comfort class', 'Business class'];
@@ -22,4 +24,24 @@ const SORT_TYPES = {
   PRICE: 'price',
 };
 
-export {OFFER_TYPES, DESTINATIONS, DESCRIPTIONS, OFFERS_EXTRA, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES};
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NEW_POINT = {
+  dateFrom: dayjs(),
+  dateTo: dayjs(),
+  type: OFFER_TYPES[0],
+  basePrice: 0,
+  offers: [],
+};
+
+export {OFFER_TYPES, DESTINATIONS, DESCRIPTIONS, OFFERS_EXTRA, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES, UserAction, UpdateType, NEW_POINT};

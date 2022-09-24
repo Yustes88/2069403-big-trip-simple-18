@@ -1,4 +1,6 @@
+import { UpdateType, UserAction } from '../const.js';
 import { remove, render, replace } from '../framework/render.js';
+import { isDatesSame, isPriceSame } from '../utile/trip-point-utile.js';
 import TripEventItemView from '../view/trip-event-item-view.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
@@ -18,6 +20,7 @@ export default class TripPointPresenter {
   #changeMode = null;
   #mode = Mode.DEFAULT;
 
+
   constructor(tripPointListContainer, changeData, changeMode) {
     this.#tripPointListContainer = tripPointListContainer;
     this.#changeData = changeData;
@@ -30,6 +33,7 @@ export default class TripPointPresenter {
     const prevTripPointComponent = this.#tripPointComponent;
     const prevTripPointEditComponent = this.#tripPointEditComponent;
 
+
     this.#tripPointComponent = new TripEventItemView(tripPoint);
     this.#tripPointEditComponent = new TripFormEditView(tripPoint);
 
@@ -38,6 +42,8 @@ export default class TripPointPresenter {
     this.#tripPointEditComponent.setRollDownClickHandler(this.#handleRollDownClick);
 
     this.#tripPointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+
+    this.#tripPointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if(prevTripPointComponent === null || prevTripPointEditComponent === null) {
       render(this.#tripPointComponent, this.#tripPointListContainer);
@@ -56,6 +62,7 @@ export default class TripPointPresenter {
     remove(prevTripPointEditComponent);
   };
 
+  //check
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#tripPointEditComponent.reset(this.#tripPoint);
@@ -63,6 +70,7 @@ export default class TripPointPresenter {
     }
   };
 
+  //check
   #replacePointWithForm = () => {
     replace(this.#tripPointEditComponent, this.#tripPointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -70,12 +78,14 @@ export default class TripPointPresenter {
     this.#mode = Mode.EDITING;
   };
 
+  //check
   #replaceFormWithPoint = () => {
     replace(this.#tripPointComponent, this.#tripPointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   };
 
+  //check
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -85,21 +95,44 @@ export default class TripPointPresenter {
     }
   };
 
+
+  //check
   #handleRollUpClick = () => {
     this.#replacePointWithForm();
   };
 
+  //check
   #handleRollDownClick = () => {
     this.#tripPointEditComponent.reset(this.#tripPoint);
     this.#replaceFormWithPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #handleFormSubmit = (tripPoint) => {
-    this.#changeData(tripPoint);
+  //check
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+    !isDatesSame(this.#tripPoint, update) ||
+    !isPriceSame(this.#tripPoint, update);
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
     this.#replaceFormWithPoint();
   };
 
+  //check
+  #handleDeleteClick = (tripPoint) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      tripPoint,
+    );
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  //check
   destroy = () => {
     remove(this.#tripPointComponent);
     remove(this.#tripPointEditComponent);

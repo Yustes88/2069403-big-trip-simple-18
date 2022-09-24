@@ -7,6 +7,8 @@ const differenceHoursMinutes = (dateFrom,dateTo) => dayjs(dateTo).diff(dayjs(dat
 const isDateAfter = (date) => date && dayjs().isAfter(date, 'D MMM');
 const isDateSame = (date) => date && dayjs().isSame(date, 'D MMM');
 const isDateBefore = (date) => date && dayjs().isBefore(date, 'D MMM');
+const isPriceNumber = (basePrice) => Number(basePrice) > 0 && Number.isInteger(Number(basePrice));
+const isDatesSame = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+const isPriceSame = (pointA, pointB) => pointA.basePrice === pointB.basePrice;
 
-
-export {humanizeDate, humanizeHour, humanizeStartDate, differenceHoursMinutes, isDateAfter, isDateSame, isDateBefore};
+export {humanizeDate, humanizeHour, humanizeStartDate, differenceHoursMinutes, isDateAfter, isDateSame, isDateBefore, isPriceNumber, isDatesSame, isPriceSame};

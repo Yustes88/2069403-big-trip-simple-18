@@ -1,16 +1,17 @@
-import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import {getRandomElements, getRandomInteger } from '../utile/common.js';
 import { mockOffersByType } from './offers-mock.js';
 
 
 const generateDate = () => {
-  const min = getRandomInteger(1, 60);
-  const hour = getRandomInteger(1, 24);
-  const day = getRandomInteger(1, 31);
+  const min = getRandomInteger(0, 39);
+  const hour = getRandomInteger(0, 17);
+  const day = getRandomInteger(1, 30);
+  const month = getRandomInteger(0, 11);
+  const year = getRandomInteger(2021, 2025);
 
-  const dateFrom = dayjs().add(day, 'day').add(hour, 'hour').add(min, 'minute');
-  const dateTo = dateFrom.add(hour, 'hour').add(min, 'minute');
+  const dateFrom = new Date(year, month, day, hour, min);
+  const dateTo = new Date(year, month + 1, day + 3, hour + 4, min + 20);
 
   return { dateFrom, dateTo };
 };
