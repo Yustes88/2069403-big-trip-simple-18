@@ -60,6 +60,7 @@ export default class TripPointNewPresenter {
 
   #handleRollDownClick = () => {
     this.destroy();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   //check

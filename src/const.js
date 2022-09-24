@@ -36,7 +36,7 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-const NewPoint = {
+const NEW_POINT = {
   dateFrom: dayjs(),
   dateTo: dayjs(),
   type: OFFER_TYPES[0],
@@ -44,4 +44,4 @@ const NewPoint = {
   offers: [],
 };
 
-export {OFFER_TYPES, DESTINATIONS, DESCRIPTIONS, OFFERS_EXTRA, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES, UserAction, UpdateType, NewPoint};
+export {OFFER_TYPES, DESTINATIONS, DESCRIPTIONS, OFFERS_EXTRA, TRIP_POINT_ITEMS, FILTER_TYPES, SORT_TYPES, UserAction, UpdateType, NEW_POINT};

@@ -1,4 +1,4 @@
-import { DESTINATIONS, NewPoint, OFFER_TYPES } from '../const.js';
+import { DESTINATIONS, NEW_POINT, OFFER_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations } from '../mock/destinations-mock.js';
 import { mockOffers, mockOffersByType } from '../mock/offers-mock.js';
@@ -30,8 +30,8 @@ const createContentTemplate = (tripPoint) => {
     </datalist>`;
 
   const typeTemplate = createType(type);
-  const destinationNameListTemplate = createDestinationListTemplate(destination !== undefined ? destinations[destination].name : '');
-  const picturesTemplate = destination !== undefined ? createPictures(destinations[destination].pictures) : '';
+  const destinationNameListTemplate = createDestinationListTemplate(destination ? destinations[destination].name : '');
+  const picturesTemplate = destination ? createPictures(destinations[destination].pictures) : '';
 
 
   const isOfferChecked = (offer) => offers.includes(offer) ? 'checked' : '';
@@ -98,7 +98,7 @@ const createContentTemplate = (tripPoint) => {
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination !== undefined ? destinations[destination].description : ''}</p>
+        <p class="event__destination-description">${destination ? destinations[destination].description : ''}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
             ${picturesTemplate}
@@ -113,11 +113,8 @@ const createContentTemplate = (tripPoint) => {
 export default class TripFormEditView extends AbstractStatefulView {
   #datepicker = null;
 
-  constructor(tripPoint) {
+  constructor(tripPoint = NEW_POINT) {
     super();
-    if(!tripPoint) {
-      tripPoint = NewPoint;
-    }
 
     this._state = TripFormEditView.parseTripPointToState(tripPoint);
 
