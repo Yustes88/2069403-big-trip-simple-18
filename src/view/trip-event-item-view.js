@@ -1,19 +1,31 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { destinations } from '../mock/destinations-mock.js';
 import { humanizeHour, humanizeStartDate } from '../utile/trip-point-utile.js';
 
 
-const createContentTemplate = (tripPoints) => {
+const createContentTemplate = (tripPoints, tripOffers, tripDestinatios) => {
   const {basePrice, destination, dateFrom, dateTo, type, offers} = tripPoints;
 
-  const destinationName = destination ? destinations.find((el) => (el.id === destination)).name : '';
+  const destinationName = destination ? tripDestinatios.find((el) => (el.id === destination)).name : '';
 
-  const selectedOffers = offers.map((el) => `<li class="event__offer">
-      <span class="event__offer-title">${el.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${el.price}</span>
-    </li>`).join('');
+  const createOffersTemplate = () => {
+    const selectedOffers = tripOffers.find((offer) => offer.type === type).offers;
 
+    let offersTemplate = '';
+    if(offers.length) {
+      offers.forEach((pointOffer) => {
+        const selectedOffer = selectedOffers.find((el) => pointOffer === el.id);
+        offersTemplate +=
+        ` <li class="event__offer">
+        <span class="event__offer-title">${selectedOffer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${selectedOffer.price}</span>
+       </li>`;
+      });
+    }
+    return offersTemplate;
+  };
+
+  const selectedOffersTemplate = createOffersTemplate();
 
   return (`<li class="trip-events__item">
   <div class="event">
@@ -34,7 +46,7 @@ const createContentTemplate = (tripPoints) => {
      </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-    ${selectedOffers}
+    ${selectedOffersTemplate}
     </ul>
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
@@ -46,13 +58,17 @@ const createContentTemplate = (tripPoints) => {
 
 export default class TripEventItemView extends AbstractView {
   #tripPoint = null;
-  constructor(tripPoint) {
+  #tripOffers = null;
+  #tripDestinatios = null;
+  constructor(tripPoint, tripOffers, tripDestinatios) {
     super();
     this.#tripPoint = tripPoint;
+    this.#tripOffers = tripOffers;
+    this.#tripDestinatios = tripDestinatios;
   }
 
   get template() {
-    return createContentTemplate(this.#tripPoint);
+    return createContentTemplate(this.#tripPoint, this.#tripOffers, this.#tripDestinatios);
   }
 
   setRollUpClickHandler = (callback) => {
