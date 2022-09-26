@@ -64,7 +64,6 @@ export default class TripsModel extends Observable {
       ];
       this._notify(updateType, updatedPoint);
     } catch(err) {
-      console.log(err);
       throw new Error('Can\'t update point');
     }
   };
