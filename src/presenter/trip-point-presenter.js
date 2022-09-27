@@ -12,6 +12,8 @@ const Mode = {
 export default class TripPointPresenter {
   #tripPointListContainer = null;
   #tripPoint = null;
+  #offers = null;
+  #destinations = null;
 
   #tripPointComponent = null;
   #tripPointEditComponent = null;
@@ -27,15 +29,17 @@ export default class TripPointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (tripPoint) => {
+  init = (tripPoint, offers, destinations) => {
     this.#tripPoint = tripPoint;
+    this.#offers = offers;
+    this.#destinations = destinations;
 
     const prevTripPointComponent = this.#tripPointComponent;
     const prevTripPointEditComponent = this.#tripPointEditComponent;
 
 
-    this.#tripPointComponent = new TripEventItemView(tripPoint);
-    this.#tripPointEditComponent = new TripFormEditView(tripPoint);
+    this.#tripPointComponent = new TripEventItemView(tripPoint, this.#offers, this.#destinations );
+    this.#tripPointEditComponent = new TripFormEditView(tripPoint, this.#offers, this.#destinations);
 
     this.#tripPointComponent.setRollUpClickHandler(this.#handleRollUpClick);
 

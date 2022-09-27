@@ -20,7 +20,7 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    const tripPoints = this.#pointsModel.tripPoint;
+    const tripPoints = this.#pointsModel.points;
 
     return [
       {

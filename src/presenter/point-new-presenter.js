@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { UpdateType, UserAction } from '../const.js';
+import { NEW_POINT, UpdateType, UserAction } from '../const.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
@@ -8,6 +8,8 @@ export default class TripPointNewPresenter {
   #changeData = null;
   #pointEditComponent = null;
   #destroyCallback = null;
+  #offers = null;
+  #destinations = null;
 
 
   constructor(tripListContainer, changeData) {
@@ -15,14 +17,16 @@ export default class TripPointNewPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback) => {
+  init = (callback, offers, destinations) => {
     this.#destroyCallback = callback;
+    this.#offers = offers;
+    this.#destinations = destinations;
 
     if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointEditComponent = new TripFormEditView();
+    this.#pointEditComponent = new TripFormEditView(NEW_POINT, this.#offers, this.#destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteClickHandler(this.#formDeleteClickHandler);
     this.#pointEditComponent.setRollDownClickHandler(this.#handleRollDownClick);
@@ -49,7 +53,7 @@ export default class TripPointNewPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      { id: nanoid(), ...point },
+      { id: nanoid(), ...point},
     );
   };
 
