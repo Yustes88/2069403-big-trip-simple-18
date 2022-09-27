@@ -73,8 +73,8 @@ export default class ContentPresenter {
 
   //check
   #renderTripPoints = () => {
-    for(let i = 0; i < this.points.length; i++) {
-      this.#renderPoint(this.points[i]);
+    for(const element of this.points) {
+      this.#renderPoint(element);
     }
   };
 

@@ -4,7 +4,6 @@ import { humanizeDate, isPriceNumber } from '../utile/trip-point-utile.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { nanoid } from 'nanoid';
 
 
 const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destinationsCityList) => {
@@ -14,7 +13,6 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
 
   const createDestinationListTemplate = (selectedCity) => {
     const cityName = pointDestinations.find((city) => city.id === selectedCity);
-    selectedCity = selectedCity ? selectedCity : selectedCity = nanoid();
 
     return `
     <label class="event__label  event__type-output" for="event-destination-${selectedCity}">
@@ -29,8 +27,8 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
 
   const createType = (currentType) => types.map((pointType) =>
     `<div class="event__type-item">
-  <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === pointType ? 'checked' : ''}>
-  <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${pointType}</label>
+  <input id="event-type-${pointType}-${destination}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${currentType === pointType ? 'checked' : ''}>
+  <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-${destination}">${pointType}</label>
   </div>`).join('');
 
   const createPictures = (pictures) => {
@@ -66,11 +64,11 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <label class="event__type  event__type-btn" for="event-type-toggle-${destination}">
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${destination}" type="checkbox">
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
@@ -82,18 +80,18 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
         ${destinationNameListTemplate}
       </div>
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
+        <label class="visually-hidden" for="event-start-time-${destination}">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}">
           &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
+        <label class="visually-hidden" for="event-end-time-${destination}">To</label>
         <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo)}">
       </div>
       <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
+        <label class="event__label" for="event-price-${destination}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${Number(basePrice)}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
+        <input class="event__input  event__input--price" id="event-price-${destination}" type="number" name="event-price" value="${Number(basePrice)}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
@@ -110,7 +108,7 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${pointDestinations[destination] ? pointDestinations[destination].description : ''}</p>
+        <p class="event__destination-description">${pointDestinations[destination - 1] ? pointDestinations[destination - 1].description : ''}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
             ${picturesTemplate}

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeHour, humanizeStartDate } from '../utile/trip-point-utile.js';
+import { humanizeHour, humanizeStartDate, isPriceNumber } from '../utile/trip-point-utile.js';
 
 
 const createContentTemplate = (tripPoints, tripOffers, tripDestinatios) => {
@@ -42,7 +42,7 @@ const createContentTemplate = (tripPoints, tripOffers, tripDestinatios) => {
       </p>
     </div>
     <p class="event__price">
-       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+       &euro;&nbsp;<span class="event__price-value">${isPriceNumber(basePrice) ? basePrice : ''}</span>
      </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">

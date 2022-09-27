@@ -94,8 +94,8 @@ export default class TripsModel extends Observable {
 
   #adaptToClient = (point) => {
     const adaptedPoint = {...point,
-      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-      dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+      dateFrom: point['date_from'] ? new Date(point['date_from']) : point['date_from'],
+      dateTo: point['date_to'] ? new Date(point['date_to']) : point['date_to'],
       basePrice: point['base_price'],
     };
     delete adaptedPoint['date_from'];
