@@ -91,7 +91,7 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${destination}" type="number" name="event-price" value="${Number(basePrice)}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--price" id="event-price-${destination}" type="text" name="event-price" value="${basePrice}" onkeyup="this.value = this.value.replace (/[^0-9]+$/, '')" ${isDisabled ? 'disabled' : ''}>
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
       <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
@@ -211,12 +211,12 @@ export default class TripFormEditView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    if(!isPriceNumber(evt.target.value)) {
-      evt.target.value = '';
+    if((isPriceNumber(evt.target.value)) > 0) {
+      this._setState({
+        basePrice: evt.target.value,
+      });
     }
-    this._setState({
-      basePrice: evt.target.value,
-    });
+    evt.target.value = '';
   };
 
   //check

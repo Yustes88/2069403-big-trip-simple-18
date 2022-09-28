@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const humanizeDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+const humanizeDate = (date) => dayjs(date).format('DD/MM/YY H:00');
 const humanizeHour = (hour) => dayjs(hour).format(' HH:00');
 const humanizeStartDate = (startDate) => dayjs(startDate).format('MMM DD');
 const differenceHoursMinutes = (dateFrom,dateTo) => dayjs(dateTo).diff(dayjs(dateFrom),'hour','minute');

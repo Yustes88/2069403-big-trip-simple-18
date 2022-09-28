@@ -41,7 +41,7 @@ const NEW_POINT = {
   dateFrom: dayjs(),
   dateTo: dayjs(),
   type: OFFER_TYPES[0],
-  basePrice: 0,
+  basePrice: 50,
   offers: [],
 };
 
