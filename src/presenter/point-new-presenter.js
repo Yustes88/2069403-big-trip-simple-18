@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { NEW_POINT, UpdateType, UserAction } from '../const.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
@@ -53,7 +52,7 @@ export default class TripPointNewPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      { id: nanoid(), ...point},
+      point,
     );
   };
 
