@@ -93,6 +93,23 @@ export default class TripPointPresenter {
     }
   };
 
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#tripPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#tripPointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#tripPointEditComponent.shake(resetFormState);
+  };
+
   //check
   #replacePointWithForm = () => {
     replace(this.#tripPointEditComponent, this.#tripPointComponent);

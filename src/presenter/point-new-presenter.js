@@ -54,6 +54,18 @@ export default class TripPointNewPresenter {
     });
   };
 
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  };
+
   //check
   #handleFormSubmit = (point) => {
     this.#changeData(

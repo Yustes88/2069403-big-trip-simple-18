@@ -155,19 +155,31 @@ export default class ContentPresenter {
   };
 
   //check
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#tripPointsPresenter.get(update.id).setSaving();
-        this.#tripPointModel.updatePoint(updateType, update);
+        try {
+          await this.#tripPointModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#tripPointsPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#tripPointNewPresenter.setSaving();
-        this.#tripPointModel.addPoint(updateType, update);
+        try {
+          await this.#tripPointModel.addPoint(updateType, update);
+        } catch(arr) {
+          this.#tripPointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
         this.#tripPointsPresenter.get(update.id).setDeleting();
-        this.#tripPointModel.deletePoint(updateType, update);
+        try {
+          await this.#tripPointModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#tripPointsPresenter.get(update.id).setAborting();
+        }
         break;
     }
   };
