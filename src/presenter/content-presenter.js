@@ -158,12 +158,15 @@ export default class ContentPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this.#tripPointsPresenter.get(update.id).setSaving();
         this.#tripPointModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
+        this.#tripPointNewPresenter.setSaving();
         this.#tripPointModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
+        this.#tripPointsPresenter.get(update.id).setDeleting();
         this.#tripPointModel.deletePoint(updateType, update);
         break;
     }
