@@ -80,10 +80,10 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
         ${destinationNameListTemplate}
       </div>
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-${destination}">From</label>
+        <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
-        <label class="visually-hidden" for="event-end-time-${destination}">To</label>
+        <label class="visually-hidden" for="event-end-time-1">To</label>
         <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(dateTo)}" ${isDisabled ? 'disabled' : ''}>
       </div>
       <div class="event__field-group  event__field-group--price">
@@ -121,7 +121,8 @@ const createContentTemplate = (tripPoint, pointOffers, pointDestinations, destin
 };
 
 export default class TripFormEditView extends AbstractStatefulView {
-  #datepicker = null;
+  #datePickerStart = null;
+  #datePickerEnd = null;
   #pointOffers = null;
   #pointDestinations = null;
   #destinationsCityList = null;
@@ -136,8 +137,7 @@ export default class TripFormEditView extends AbstractStatefulView {
 
 
     this.#setInnerHandlers();
-    this.#setStartDatePicker();
-    this.#setEndDatePicker();
+    this.#setDatePicker();
   }
 
   get template() {
@@ -147,9 +147,14 @@ export default class TripFormEditView extends AbstractStatefulView {
   removeElement = () => {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datePickerStart) {
+      this.#datePickerStart.destroy();
+      this.#datePickerStart = null;
+    }
+
+    if (this.#datePickerEnd) {
+      this.#datePickerEnd.destroy();
+      this.#datePickerEnd = null;
     }
   };
 
@@ -198,8 +203,7 @@ export default class TripFormEditView extends AbstractStatefulView {
   //check
   _restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.#setStartDatePicker();
-    this.#setEndDatePicker();
+    this.#setDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollDownClickHandler(this._callback.rollDownClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
@@ -262,9 +266,9 @@ export default class TripFormEditView extends AbstractStatefulView {
   };
 
   //check
-  #setStartDatePicker = () => {
+  #setDatePicker = () => {
     const eventStartTime = this.element.querySelector('#event-start-time-1');
-    this.#datepicker = flatpickr(
+    this.#datePickerStart = flatpickr(
       eventStartTime,
       {
         dateFormat: 'd/m/y H:i',
@@ -274,22 +278,20 @@ export default class TripFormEditView extends AbstractStatefulView {
         'time_24hr': true,
       },
     );
-  };
-
-  //check
-  #setEndDatePicker = () => {
     const eventEndTime = this.element.querySelector('#event-end-time-1');
-    this.#datepicker = flatpickr(
+    this.#datePickerEnd = flatpickr(
       eventEndTime,
       {
         dateFormat: 'd/m/y H:i',
         defaultDate: eventEndTime.value,
+        minDate: eventStartTime.value,
         onChange: this.#endDateChangeHandler,
         enableTime: true,
         'time_24hr': true,
       },
     );
   };
+
 
   //TODO
   #setInnerHandlers = () => {
