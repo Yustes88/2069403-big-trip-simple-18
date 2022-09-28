@@ -8,6 +8,12 @@ import { sortDate, sortPrice } from '../utile/sort-utile.js';
 import { filter } from '../utile/filter-utile.js';
 import TripPointNewPresenter from './point-new-presenter.js';
 import LoadingView from '../view/loading-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 
 export default class ContentPresenter {
@@ -28,6 +34,7 @@ export default class ContentPresenter {
   #currentSortType = SORT_TYPES.DATE; //check
   #filterType = FILTER_TYPES.EVERYTHING; //check
   #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   //check
   constructor(mainContainer, tripPointModel, filterModel){
@@ -155,18 +162,36 @@ export default class ContentPresenter {
   };
 
   //check
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#tripPointModel.updatePoint(updateType, update);
+        this.#tripPointsPresenter.get(update.id).setSaving();
+        try {
+          await this.#tripPointModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#tripPointsPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#tripPointModel.addPoint(updateType, update);
+        this.#tripPointNewPresenter.setSaving();
+        try {
+          await this.#tripPointModel.addPoint(updateType, update);
+        } catch(arr) {
+          this.#tripPointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#tripPointModel.deletePoint(updateType, update);
+        this.#tripPointsPresenter.get(update.id).setDeleting();
+        try {
+          await this.#tripPointModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#tripPointsPresenter.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   //check
