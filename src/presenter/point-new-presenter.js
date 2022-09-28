@@ -47,6 +47,13 @@ export default class TripPointNewPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
   //check
   #handleFormSubmit = (point) => {
     this.#changeData(
