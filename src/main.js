@@ -17,21 +17,21 @@ const tripMainElement = document.querySelector('.trip-main');
 const tripPointModel = new TripsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 const contentPresenter = new ContentPresenter(siteContentWrapperElement, tripPointModel, filterModel);
-const filterPresenterElement = new FilterPresenter(tripControlElement, filterModel, tripPointModel);
-const newTripPointButtonComponent = new NewTripPointButtonView();
+const filterPresenter = new FilterPresenter(tripControlElement, filterModel, tripPointModel);
+const newTripPointButton = new NewTripPointButtonView();
 
 const handleNewTripPointFormClose = () => {
-  newTripPointButtonComponent.element.disabled = false;
+  newTripPointButton.element.disabled = false;
 };
 
 const handleNewEventButtonClick = () => {
   contentPresenter.createPoint(handleNewTripPointFormClose);
-  newTripPointButtonComponent.element.disabled = true;
+  newTripPointButton.element.disabled = true;
 };
 
-render(newTripPointButtonComponent, tripMainElement);
-newTripPointButtonComponent.setClickHandler(handleNewEventButtonClick);
+render(newTripPointButton, tripMainElement);
+newTripPointButton.setClickHandler(handleNewEventButtonClick);
 
 contentPresenter.init();
-filterPresenterElement.init();
+filterPresenter.init();
 tripPointModel.init();

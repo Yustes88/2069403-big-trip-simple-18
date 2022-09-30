@@ -144,6 +144,14 @@ export default class TripFormEditView extends AbstractStatefulView {
     return createContentTemplate(this._state, this.#pointOffers, this.#pointDestinations, this.#destinationsCityList);
   }
 
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.#setDatePicker();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollDownClickHandler(this._callback.rollDownClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  };
+
   removeElement = () => {
     super.removeElement();
 
@@ -164,108 +172,34 @@ export default class TripFormEditView extends AbstractStatefulView {
     );
   };
 
-  //check
+
   setRollDownClickHandler = (callback) => {
     this._callback.rollDownClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleRollDownClick);
   };
 
-  //check
-  #handleRollDownClick = (evt) => {
-    evt.preventDefault();
-    this._callback.rollDownClick();
-  };
-
-  //check
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
-  //check
+
   setDeleteClickHandler = (callback) => {
     this._callback.deleteClick = callback;
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
   };
 
-  //check
-  #formSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.formSubmit(TripFormEditView.parseStateToTripPoint(this._state));
+  #setInnerHandlers = () => {
+    this.element.querySelectorAll('.event__type-input').forEach((evtType) =>
+      evtType.addEventListener('click', this.#typeToggleHandler));
+
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
+
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
+
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
   };
 
-  //check
-  #formDeleteClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.deleteClick(TripFormEditView.parseStateToTripPoint(this._state));
-  };
-
-  //check
-  _restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.#setDatePicker();
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setRollDownClickHandler(this._callback.rollDownClick);
-    this.setDeleteClickHandler(this._callback.deleteClick);
-  };
-
-  #priceChangeHandler = (evt) => {
-    evt.preventDefault();
-    if((isPriceNumber(evt.target.value)) > 0) {
-      this._setState({
-        basePrice: evt.target.value,
-      });
-    }
-    evt.target.value = '';
-  };
-
-  //check
-  #typeToggleHandler = (evt) => {
-    this.updateElement({
-      type: evt.target.value,
-      offers: []
-    });
-  };
-
-  //check
-  #startDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: userDate,
-    });
-  };
-
-  //check
-  #endDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate,
-    });
-  };
-
-  //check
-  #destinationToggleHandler = (evt) => {
-    if(!(this.#destinationsCityList.includes(evt.target.value))) {
-      return;
-    }
-    this.#pointDestinations.forEach((city) => {
-      if(evt.target.value && city.name === evt.target.value) {
-        this.updateElement({
-          destination: city.id,
-        });
-      }
-    });
-  };
-
-  //check
-  #eventSelectOffersToggleHandler = () => {
-    const selectOffers = [];
-    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
-      .forEach((checkbox) => checkbox.checked ? selectOffers.push(Number(checkbox.dataset.id)) : '');
-    this.updateElement({
-      offers: selectOffers,
-    });
-  };
-
-  //check
   #setDatePicker = () => {
     const eventStartTime = this.element.querySelector('#event-start-time-1');
     this.#datePickerStart = flatpickr(
@@ -292,20 +226,81 @@ export default class TripFormEditView extends AbstractStatefulView {
     );
   };
 
-
-  //TODO
-  #setInnerHandlers = () => {
-    this.element.querySelectorAll('.event__type-input').forEach((evtType) =>
-      evtType.addEventListener('click', this.#typeToggleHandler));
-
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationToggleHandler);
-
-    this.element.querySelectorAll('.event__offer-checkbox').forEach((eventType) => eventType.addEventListener('change', this.#eventSelectOffersToggleHandler));
-
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
+  #handleRollDownClick = (evt) => {
+    evt.preventDefault();
+    this._callback.rollDownClick();
   };
 
-  //check
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(TripFormEditView.parseStateToTripPoint(this._state));
+  };
+
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(TripFormEditView.parseStateToTripPoint(this._state));
+  };
+
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    if((isPriceNumber(evt.target.value)) > 0) {
+      this._setState({
+        basePrice: evt.target.value,
+      });
+    }
+    evt.target.value = '';
+  };
+
+
+  #typeToggleHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value,
+      offers: []
+    });
+  };
+
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+
+  #destinationToggleHandler = (evt) => {
+    if(!(this.#destinationsCityList.includes(evt.target.value))) {
+      return;
+    }
+    this.#pointDestinations.forEach((city) => {
+      if(evt.target.value && city.name === evt.target.value) {
+        this.updateElement({
+          destination: city.id,
+        });
+      }
+    });
+  };
+
+
+  #eventSelectOffersToggleHandler = () => {
+    const selectOffers = [];
+    Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
+      .forEach((checkbox) => checkbox.checked ? selectOffers.push(Number(checkbox.dataset.id)) : '');
+    this.updateElement({
+      offers: selectOffers,
+    });
+  };
+
+
   static parseTripPointToState = (tripPoint) => (
     {...tripPoint,
       isDisabled: false,
@@ -314,7 +309,6 @@ export default class TripFormEditView extends AbstractStatefulView {
     }
   );
 
-  //check
   static parseStateToTripPoint = (state) => {
     const tripPoint = {...state};
     delete state.isDisabled;

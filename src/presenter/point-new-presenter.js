@@ -1,5 +1,6 @@
 import { NEW_POINT, UpdateType, UserAction } from '../const.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
+import { isEscKey } from '../utile/trip-point-utile.js';
 import TripFormEditView from '../view/trip-form-edit-view.js';
 
 export default class TripPointNewPresenter {
@@ -35,7 +36,7 @@ export default class TripPointNewPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  //check
+
   destroy = () => {
     if (this.#pointEditComponent === null) {
       return;
@@ -66,7 +67,7 @@ export default class TripPointNewPresenter {
     this.#pointEditComponent.shake(resetFormState);
   };
 
-  //check
+
   #handleFormSubmit = (point) => {
     this.#changeData(
       UserAction.ADD_POINT,
@@ -85,9 +86,9 @@ export default class TripPointNewPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  //check
+
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscKey) {
       evt.preventDefault();
       this.destroy();
     }
