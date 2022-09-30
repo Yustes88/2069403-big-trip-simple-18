@@ -1,7 +1,7 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import SortFormView from '../view/sort-form-view.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
-import TripList from '../view/trip-list.js';
+import TripListView from '../view/trip-list-view.js';
 import TripPointPresenter from './trip-point-presenter.js';
 import { FILTER_TYPES, SORT_TYPES, UpdateType, UserAction } from '../const.js';
 import { sortDate, sortPrice } from '../utile/sort-utile.js';
@@ -26,7 +26,7 @@ export default class ContentPresenter {
   #tripPointsPresenter = new Map();
   #tripPointNewPresenter = null;
 
-  #tripListComponent = new TripList();
+  #tripListComponent = new TripListView();
   #loadingComponent = new LoadingView();
   #pointsListEmptyComponent = null;
 
