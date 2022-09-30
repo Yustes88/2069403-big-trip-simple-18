@@ -3,7 +3,7 @@ import SortFormView from '../view/sort-form-view.js';
 import PointsListEmptyView from '../view/points-list-empty-view.js';
 import TripListView from '../view/trip-list-view.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { FILTER_TYPES, SORT_TYPES, UpdateType, UserAction } from '../const.js';
+import { FilterTypes, SortTypes, UpdateType, UserAction } from '../const.js';
 import { sortDate, sortPrice } from '../utile/sort-utile.js';
 import { filter } from '../utile/filter-utile.js';
 import TripPointNewPresenter from './point-new-presenter.js';
@@ -30,8 +30,8 @@ export default class ContentPresenter {
   #loadingComponent = new LoadingView();
   #pointsListEmptyComponent = null;
 
-  #currentSortType = SORT_TYPES.DATE;
-  #filterType = FILTER_TYPES.EVERYTHING;
+  #currentSortType = SortTypes.DATE;
+  #filterType = FilterTypes.EVERYTHING;
   #isLoading = true;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
@@ -53,7 +53,7 @@ export default class ContentPresenter {
     const filteredTripPoint = filter[this.#filterType](tripPoints);
 
     switch(this.#currentSortType) {
-      case SORT_TYPES.PRICE:
+      case SortTypes.PRICE:
         return filteredTripPoint.sort(sortPrice);
     }
     return filteredTripPoint.sort(sortDate);
@@ -65,8 +65,8 @@ export default class ContentPresenter {
 
 
   createPoint = (callback) => {
-    this.#currentSortType = SORT_TYPES.DATE;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
+    this.#currentSortType = SortTypes.DATE;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
     this.#tripPointNewPresenter.init(callback, this.#tripPointModel.offers, this.#tripPointModel.destinations);
   };
 
@@ -138,7 +138,7 @@ export default class ContentPresenter {
       remove(this.#pointsListEmptyComponent);
     }
     if (resetSortType) {
-      this.#currentSortType = SORT_TYPES.DATE;
+      this.#currentSortType = SortTypes.DATE;
     }
   };
 

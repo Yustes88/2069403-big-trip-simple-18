@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 
-const FILTER_TYPES = {
+const FilterTypes = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
 };
 
-const SORT_TYPES = {
+const SortTypes = {
   DATE: 'day',
   PRICE: 'price',
 };
@@ -31,4 +31,4 @@ const NEW_POINT = {
   offers: [],
 };
 
-export {FILTER_TYPES, SORT_TYPES, UserAction, UpdateType, NEW_POINT};
+export {FilterTypes, SortTypes, UserAction, UpdateType, NEW_POINT};
