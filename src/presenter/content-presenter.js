@@ -52,9 +52,8 @@ export default class ContentPresenter {
 
     const filteredTripPoint = filter[this.#filterType](tripPoints);
 
-    switch(this.#currentSortType) {
-      case SortTypes.PRICE:
-        return filteredTripPoint.sort(sortPrice);
+    if(this.#currentSortType === SortTypes.PRICE) {
+      return filteredTripPoint.sort(sortPrice);
     }
     return filteredTripPoint.sort(sortDate);
   }

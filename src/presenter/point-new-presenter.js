@@ -88,7 +88,7 @@ export default class TripPointNewPresenter {
 
 
   #escKeyDownHandler = (evt) => {
-    if (isEscKey) {
+    if (isEscKey(evt)) {
       evt.preventDefault();
       this.destroy();
     }

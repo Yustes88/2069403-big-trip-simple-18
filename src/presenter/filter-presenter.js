@@ -25,12 +25,12 @@ export default class FilterPresenter {
     return [
       {
         type: FilterTypes.EVERYTHING,
-        name: 'everything',
+        name: FilterTypes.EVERYTHING,
         count: filter[FilterTypes.EVERYTHING](tripPoints).length,
       },
       {
         type: FilterTypes.FUTURE,
-        name: 'future',
+        name: FilterTypes.FUTURE,
         count: filter[FilterTypes.FUTURE](tripPoints).length,
       },
     ];

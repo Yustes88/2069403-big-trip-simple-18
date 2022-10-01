@@ -132,7 +132,7 @@ export default class TripPointPresenter {
 
 
   #escKeyDownHandler = (evt) => {
-    if (isEscKey) {
+    if (isEscKey(evt)) {
       evt.preventDefault();
       this.#tripPointEditComponent.reset(this.#tripPoint);
       this.#replaceFormWithPoint();
