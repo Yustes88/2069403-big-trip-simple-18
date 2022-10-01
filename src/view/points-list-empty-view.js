@@ -1,9 +1,9 @@
-import { FILTER_TYPES } from '../const.js';
+import { FilterTypes } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const NoTripPointTextType = {
-  [FILTER_TYPES.EVERYTHING]: 'Click New Event to create your first point',
-  [FILTER_TYPES.FUTURE]: 'There are no future events now',
+  [FilterTypes.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterTypes.FUTURE]: 'There are no future events now',
 };
 
 const createContentTemplate = (filterType) => {

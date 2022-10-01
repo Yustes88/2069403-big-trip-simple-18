@@ -2,10 +2,10 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeHour, humanizeStartDate, isPriceNumber } from '../utile/trip-point-utile.js';
 
 
-const createContentTemplate = (tripPoints, tripOffers, tripDestinatios) => {
+const createContentTemplate = (tripPoints, tripOffers, tripDestinations) => {
   const {basePrice, destination, dateFrom, dateTo, type, offers} = tripPoints;
 
-  const destinationName = destination ? tripDestinatios.find((el) => (el.id === destination)).name : '';
+  const destinationName = destination ? tripDestinations.find((el) => (el.id === destination)).name : '';
 
   const createOffersTemplate = () => {
     const selectedOffers = tripOffers.find((offer) => offer.type === type).offers;
@@ -59,16 +59,16 @@ const createContentTemplate = (tripPoints, tripOffers, tripDestinatios) => {
 export default class TripEventItemView extends AbstractView {
   #tripPoint = null;
   #tripOffers = null;
-  #tripDestinatios = null;
-  constructor(tripPoint, tripOffers, tripDestinatios) {
+  #tripDestinations = null;
+  constructor(tripPoint, tripOffers, tripDestinations) {
     super();
     this.#tripPoint = tripPoint;
     this.#tripOffers = tripOffers;
-    this.#tripDestinatios = tripDestinatios;
+    this.#tripDestinations = tripDestinations;
   }
 
   get template() {
-    return createContentTemplate(this.#tripPoint, this.#tripOffers, this.#tripDestinatios);
+    return createContentTemplate(this.#tripPoint, this.#tripOffers, this.#tripDestinations);
   }
 
   setRollUpClickHandler = (callback) => {

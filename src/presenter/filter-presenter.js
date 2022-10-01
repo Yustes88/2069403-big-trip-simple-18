@@ -1,4 +1,4 @@
-import { FILTER_TYPES, UpdateType } from '../const.js';
+import { FilterTypes, UpdateType } from '../const.js';
 import { remove, render, replace } from '../framework/render.js';
 import { filter } from '../utile/filter-utile';
 import FiltersFormView from '../view/filters-form-view.js';
@@ -24,14 +24,14 @@ export default class FilterPresenter {
 
     return [
       {
-        type: FILTER_TYPES.EVERYTHING,
-        name: 'everything',
-        count: filter[FILTER_TYPES.EVERYTHING](tripPoints).length,
+        type: FilterTypes.EVERYTHING,
+        name: FilterTypes.EVERYTHING,
+        count: filter[FilterTypes.EVERYTHING](tripPoints).length,
       },
       {
-        type: FILTER_TYPES.FUTURE,
-        name: 'future',
-        count: filter[FILTER_TYPES.FUTURE](tripPoints).length,
+        type: FilterTypes.FUTURE,
+        name: FilterTypes.FUTURE,
+        count: filter[FilterTypes.FUTURE](tripPoints).length,
       },
     ];
   }
